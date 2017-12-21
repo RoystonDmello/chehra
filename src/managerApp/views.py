@@ -19,11 +19,11 @@ def index(request):
 class Login(APIView):
 
     def post(self, request, *args, **kwargs):
-        if not request.data:
+        if not request.POST:
             return Response({'Error': "Please provide username/password"}, status="400")
 
-        username = request.data['username']
-        password = request.data['password']
+        username = request.POST.get('username')
+        password = request.POST.get('password')
         try:
             user = authenticate(username=username, password=password)
             teacher = Teacher.objects.get(user=user)
