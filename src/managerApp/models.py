@@ -17,16 +17,30 @@ class Teacher(models.Model):
         return self.user.username
 
 
-'''
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Teacher.objects.create(user=instance)
+class Student(models.Model):
+    student_id = models.AutoField(primary_key=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    uid = models.CharField(max_length=15, unique=True)
+    dept_id = models.ForeignKey('Department', on_delete=models.CASCADE)
 
 
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.teacher.save()
+    # for python 2
+    def __unicode__(self):
+        return self.user.username
 
-'''
+    # for python 3
+    def __str__(self):
+        return self.user.username
 
+
+class Department(models.Model):
+    dept_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=10)
+
+    # for python 2
+    def __unicode__(self):
+        return self.name
+
+    # for python 3
+    def __str__(self):
+        return self.name
