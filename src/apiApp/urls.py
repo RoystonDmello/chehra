@@ -8,6 +8,11 @@ from .department.views import (
     DepartmentUpdateAPIView,
     DepartmentDeleteAPIView
 )
+from .course.views import (
+    CourseCreateAPIView,
+    CourseListAPIView,
+    CourseDetailAPIView
+)
 
 urlpatterns = [
     url(r'^$', index),
@@ -26,6 +31,12 @@ urlpatterns = [
     url(r'^department/update/(?P<pk>\d+)/$', DepartmentUpdateAPIView.as_view()),
     # delete request eg: http://127.0.0.1:8000/api/department/delete/2/
     url(r'^department/delete/(?P<pk>\d+)/$', DepartmentDeleteAPIView.as_view()),
+
+
+    # course
+    url(r'^course/create/$', CourseCreateAPIView.as_view()),
+    url(r'^course/get/$', CourseListAPIView.as_view()),
+    url(r'^course/get/(?P<pk>\d+)/$', CourseDetailAPIView.as_view()),
 
 
 ]
