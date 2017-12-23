@@ -27,3 +27,13 @@ class CourseListAPIView(ListAPIView):
 class CourseDetailAPIView(RetrieveAPIView):
     queryset = Course.objects.all()
     serializer_class = CourseDetailSerializer
+
+
+class CourseUpdateAPIView(UpdateAPIView):
+    queryset = Course.objects.all()
+    serializer_class = CourseCreateSerializer
+
+
+class CourseDeleteAPIView(DestroyAPIView):
+    queryset = Course.objects.all()
+    serializer_class = CourseCreateSerializer

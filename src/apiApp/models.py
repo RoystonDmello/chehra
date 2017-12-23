@@ -49,7 +49,7 @@ class Course(models.Model):
     course_id = models.AutoField(primary_key=True)
     dept_id = models.ForeignKey('Department', on_delete=models.CASCADE)
     teacher_id = models.ForeignKey('Teacher', on_delete=models.CASCADE)
-    name = models.CharField(max_length=10, null=False)
+    name = models.CharField(max_length=20, null=False)
     description = models.CharField(max_length=50, blank=True)    # optional
     academic_yr = models.IntegerField(null=False)   # 2015 -> 2015-16, 2016 -> 2016-2017
     year = models.IntegerField(null=False)  # 1->First Year, 2->Second Year

@@ -11,7 +11,9 @@ from .department.views import (
 from .course.views import (
     CourseCreateAPIView,
     CourseListAPIView,
-    CourseDetailAPIView
+    CourseDetailAPIView,
+    CourseUpdateAPIView,
+    CourseDeleteAPIView
 )
 
 urlpatterns = [
@@ -37,6 +39,8 @@ urlpatterns = [
     url(r'^course/create/$', CourseCreateAPIView.as_view()),
     url(r'^course/get/$', CourseListAPIView.as_view()),
     url(r'^course/get/(?P<pk>\d+)/$', CourseDetailAPIView.as_view()),
+    url(r'^course/update/(?P<pk>\d+)/$', CourseUpdateAPIView.as_view()),
+    url(r'^course/delete/(?P<pk>\d+)/$', CourseDeleteAPIView.as_view()),
 
 
 ]
