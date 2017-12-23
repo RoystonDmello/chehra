@@ -43,3 +43,23 @@ class Department(models.Model):
     # for python 3
     def __str__(self):
         return self.name
+
+
+class Course(models.Model):
+    course_id = models.AutoField(primary_key=True)
+    dept_id = models.ForeignKey('Department', on_delete=models.CASCADE)
+    teacher_id = models.ForeignKey('Teacher', on_delete=models.CASCADE)
+    name = models.CharField(max_length=10, null=False)
+    description = models.CharField(max_length=50, blank=True)    # optional
+    academic_yr = models.IntegerField(null=False)   # 2015 -> 2015-16, 2016 -> 2016-2017
+    year = models.IntegerField(null=False)  # 1->First Year, 2->Second Year
+    updated = models.DateTimeField(auto_now=True, auto_now_add=False)
+    created = models.DateTimeField(auto_now=False, auto_now_add=True)
+
+    # for python 2
+    def __unicode__(self):
+        return self.name
+
+    # for python 3
+    def __str__(self):
+        return self.name
