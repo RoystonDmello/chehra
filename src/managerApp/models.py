@@ -23,7 +23,6 @@ class Student(models.Model):
     uid = models.CharField(max_length=15, unique=True)
     dept_id = models.ForeignKey('Department', on_delete=models.CASCADE)
 
-
     # for python 2
     def __unicode__(self):
         return self.user.username
