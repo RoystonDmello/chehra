@@ -1,9 +1,8 @@
 from django.contrib import admin
 from .models import (
-    Teacher,
-    Student,
+    Teacher, Student,
     Department,
-    Course
+    Course, Lecture
 )
 
 
@@ -29,7 +28,12 @@ class CourseAdminModel(admin.ModelAdmin):
     list_display_links = ["dept_id", "teacher_id"]
 
 
+class LectureAdminModel(admin.ModelAdmin):
+    list_display = ['lect_id', 'course_id', 'lect_no', 'duration', 'comment',
+                    'updated', 'created']
+
 admin.site.register(Teacher, TeacherAdminModel)
 admin.site.register(Student, StudentAdminModel)
 admin.site.register(Department, DepartmentAdminModel)
 admin.site.register(Course, CourseAdminModel)
+admin.site.register(Lecture, LectureAdminModel)
