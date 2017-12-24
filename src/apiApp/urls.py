@@ -13,7 +13,8 @@ from .course.views import (
     CourseListAPIView,
     CourseDetailAPIView,
     CourseUpdateAPIView,
-    CourseDeleteAPIView
+    CourseDeleteAPIView,
+    CourseListByTeacherIdAPIView
 )
 
 urlpatterns = [
@@ -41,6 +42,8 @@ urlpatterns = [
     url(r'^course/get/(?P<pk>\d+)/$', CourseDetailAPIView.as_view()),
     url(r'^course/update/(?P<pk>\d+)/$', CourseUpdateAPIView.as_view()),
     url(r'^course/delete/(?P<pk>\d+)/$', CourseDeleteAPIView.as_view()),
+
+    url(r'^course/getByTeacherId/$', CourseListByTeacherIdAPIView.as_view()),
 
 
 ]
