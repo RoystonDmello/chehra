@@ -1,8 +1,8 @@
 from django.contrib import admin
 from .models import (
     Teacher, Student,
-    Department,
-    Course, Lecture
+    Department, Course,
+    Lecture, StudentImage
 )
 
 
@@ -32,8 +32,13 @@ class LectureAdminModel(admin.ModelAdmin):
     list_display = ['lect_id', 'course_id', 'lect_no', 'duration', 'comment',
                     'updated', 'created']
 
+
+class StudentImageAdminModel(admin.ModelAdmin):
+    list_display = ['image_id', 'student_id', 'image', 'type']
+
 admin.site.register(Teacher, TeacherAdminModel)
 admin.site.register(Student, StudentAdminModel)
 admin.site.register(Department, DepartmentAdminModel)
 admin.site.register(Course, CourseAdminModel)
 admin.site.register(Lecture, LectureAdminModel)
+admin.site.register(StudentImage, StudentImageAdminModel)

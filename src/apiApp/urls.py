@@ -1,6 +1,10 @@
 from django.conf.urls import url, include
 from .views import index
-from .auth.views import Login, Register
+from .auth.views import (
+    Login, Register, StudentImageCreateAPIView,
+    StudentImageUpdateAPIView, StudentImageGetListAPIView,
+    StudentImageDeleteAPIView
+)
 from .department.views import (
     DepartmentListAPIView, DepartmentCreateAPIView,
     DepartmentDetailAPIView, DepartmentUpdateAPIView,
@@ -30,6 +34,11 @@ urlpatterns = [
     # auth
     url(r'^login/$', Login.as_view()),
     url(r'^register/$', Register.as_view()),
+
+    url(r'^student/upload_image/$', StudentImageCreateAPIView.as_view()),
+    url(r'^student/edit_image/$', StudentImageUpdateAPIView.as_view()),
+    url(r'^student/get_images/$', StudentImageGetListAPIView.as_view()),
+    url(r'^student/delete_image/$', StudentImageDeleteAPIView.as_view()),
 
 
     # department

@@ -4,10 +4,18 @@ from rest_framework.views import APIView
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 
+from rest_framework.generics import (
+    ListAPIView,
+    CreateAPIView,
+    RetrieveAPIView,
+    UpdateAPIView,
+    DestroyAPIView
+)
 
 import jwt, json, jsonpickle
 
-from ..models import Teacher, Student, Department
+from .serializers import StudentImageSerializer
+from ..models import Teacher, Student, Department, StudentImage
 
 
 class Register(APIView):
@@ -129,4 +137,28 @@ class Login(APIView):
             content_type="application/json",
             safe=False
         )
+
+
+class StudentImageCreateAPIView(CreateAPIView):
+    serializer_class = StudentImageSerializer
+    queryset = StudentImage.objects.all()
+
+
+class StudentImageUpdateAPIView(UpdateAPIView):
+    serializer_class = StudentImageSerializer
+    queryset = StudentImage.objects.all()
+
+
+class StudentImageGetListAPIView(ListAPIView):
+    serializer_class = StudentImageSerializer
+
+    def get_queryset(self, *args, **kwargs):
+        student_id = self.request.GET['student_id']
+        return StudentImage.objects.filter(student_id=student_id)
+
+
+class StudentImageDeleteAPIView(DestroyAPIView):
+    serializer_class = StudentImageSerializer
+    queryset = StudentImage.objects.all()
+
 
