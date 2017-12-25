@@ -8,7 +8,7 @@ from rest_framework.generics import (
 )
 from rest_framework.views import APIView
 from ..models import Student, Course
-from .serializers import StudentSerializer
+from ..auth.serializers import StudentSerializer
 from ..course.serializers import CourseDetailSerializer
 
 

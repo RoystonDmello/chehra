@@ -76,6 +76,8 @@ class Lecture(models.Model):
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
 
+    students = models.ManyToManyField(Student)
+
     # for python 2
     def __unicode__(self):
         return self.lect_id

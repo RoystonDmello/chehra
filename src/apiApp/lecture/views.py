@@ -19,7 +19,7 @@ from ..models import Lecture
 class LectureCreateAPIView(CreateAPIView):
     queryset = Lecture.objects.all()
     serializer_class = LectureCreateSerializer
-    permission_classes = [IsAuthenticated, IsTeacher]
+    # permission_classes = [IsAuthenticated, IsTeacher]
 
 
 class LectureListByCourse(ListAPIView):

@@ -19,6 +19,10 @@ from .course_student.views import (
     EnrollInCourse, GetEnrolledStudentsByCourseIdListAPIView,
     GetEnrolledCoursesByStudentIdListAPIView
 )
+from .lecture_student.views import (
+    MarkAttendanceAPIView,StudentListByLectureIdListAPIView,
+    LectureByStudentIdListAPIView
+)
 
 urlpatterns = [
     url(r'^$', index),
@@ -33,10 +37,10 @@ urlpatterns = [
     url(r'^department/get/$', DepartmentListAPIView.as_view()),
     url(r'^department/get/(?P<pk>\d+)/$', DepartmentDetailAPIView.as_view()),
 
-    # put request eg: /api/department/update/2/ with params ['name']
+        # put request eg: /api/department/update/2/ with params ['name']
     url(r'^department/update/(?P<pk>\d+)/$', DepartmentUpdateAPIView.as_view()),
 
-    # delete request eg: /api/department/delete/2/
+        # delete request eg: /api/department/delete/2/
     url(r'^department/delete/(?P<pk>\d+)/$', DepartmentDeleteAPIView.as_view()),
 
 
@@ -53,7 +57,7 @@ urlpatterns = [
     # lecture
     url(r'^lecture/create/$', LectureCreateAPIView.as_view()),
 
-    # get request eg: /api/lecture/getByCourseId/?course_id=2
+        # get request eg: /api/lecture/getByCourseId/?course_id=2
     url(r'^lecture/getByCourseId/$', LectureListByCourse.as_view()),
 
     url(r'^lecture/update/(?P<pk>\d+)/$', LectureUpdateAPIView.as_view()),
@@ -62,7 +66,12 @@ urlpatterns = [
     # course-student
     url(r'^course/enrollStudentInCourse/$', EnrollInCourse.as_view()),   # course_id, student_id
     url(r'^course/getEnrolledStudents/$', GetEnrolledStudentsByCourseIdListAPIView.as_view()),
-    url(r'^course/getEnrolledCourses/$', GetEnrolledCoursesByStudentIdListAPIView.as_view())
+    url(r'^course/getEnrolledCourses/$', GetEnrolledCoursesByStudentIdListAPIView.as_view()),
 
+
+    # lecture-student
+    url(r'^lecture/markAttendance/$', MarkAttendanceAPIView.as_view()),
+    url(r'^lecture/getPresentStudents/$', StudentListByLectureIdListAPIView.as_view()),
+    url(r'^lecture/getLecturesByStudentId', LectureByStudentIdListAPIView.as_view())
 
 ]
