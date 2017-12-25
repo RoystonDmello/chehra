@@ -23,7 +23,7 @@ class DepartmentAdminModel(admin.ModelAdmin):
 class CourseAdminModel(admin.ModelAdmin):
     list_display = ["course_id", "dept_id", "teacher_id",
                     "name", "description", "academic_yr", "year",
-                    "updated", "created"]
+                    "updated", "created",]
 
     list_display_links = ["dept_id", "teacher_id"]
 

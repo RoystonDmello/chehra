@@ -17,7 +17,7 @@ from .serializers import (
     CourseDetailSerializer
 )
 
-from ..models import Course,Teacher
+from ..models import Course, Teacher, Department
 
 
 # don't change variable names
@@ -40,6 +40,15 @@ class CourseListByTeacherIdAPIView(ListAPIView):
     def get_queryset(self, *args, **kwargs):
         teacher = Teacher.objects.filter(user=self.request.user).first()
         queryset = Course.objects.filter(teacher_id=teacher.teacher_id)
+        return queryset
+
+
+class CourseListByDeptIdAPIView(ListAPIView):
+    serializer_class = CourseDetailSerializer
+
+    def get_queryset(self, *args, **kwargs):
+        department = Department.objects.filter(dept_id=self.request.POST['dept_id']).first()
+        queryset = Course.objects.filter(dept_id=department)
         return queryset
 
 

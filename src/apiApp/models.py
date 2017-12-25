@@ -56,6 +56,8 @@ class Course(models.Model):
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
 
+    students = models.ManyToManyField(Student)
+
     # for python 2
     def __unicode__(self):
         return self.name
@@ -70,7 +72,7 @@ class Lecture(models.Model):
     course_id = models.ForeignKey('Course', on_delete=models.CASCADE)
     lect_no = models.IntegerField(blank=True)
     duration = models.IntegerField(null=False)
-    comment = models.CharField(max_length=50,blank=True)    # optional
+    comment = models.CharField(max_length=50, blank=True)    # optional
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
 

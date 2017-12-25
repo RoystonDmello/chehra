@@ -9,11 +9,15 @@ from .department.views import (
 from .course.views import (
     CourseCreateAPIView, CourseListAPIView,
     CourseDetailAPIView, CourseUpdateAPIView,
-    CourseDeleteAPIView, CourseListByTeacherIdAPIView
+    CourseDeleteAPIView, CourseListByTeacherIdAPIView, CourseListByDeptIdAPIView
 )
 from .lecture.views import (
     LectureCreateAPIView, LectureListByCourse,
     LectureUpdateAPIView
+)
+from .course_student.views import (
+    EnrollInCourse, GetEnrolledStudentsByCourseIdListAPIView,
+    GetEnrolledCoursesByStudentIdListAPIView
 )
 
 urlpatterns = [
@@ -44,7 +48,7 @@ urlpatterns = [
     url(r'^course/delete/(?P<pk>\d+)/$', CourseDeleteAPIView.as_view()),
 
     url(r'^course/getByTeacherId/$', CourseListByTeacherIdAPIView.as_view()),
-
+    url(r'^course/getByDeptId/$', CourseListByDeptIdAPIView.as_view()),
 
     # lecture
     url(r'^lecture/create/$', LectureCreateAPIView.as_view()),
@@ -53,6 +57,12 @@ urlpatterns = [
     url(r'^lecture/getByCourseId/$', LectureListByCourse.as_view()),
 
     url(r'^lecture/update/(?P<pk>\d+)/$', LectureUpdateAPIView.as_view()),
+
+
+    # course-student
+    url(r'^course/enrollStudentInCourse/$', EnrollInCourse.as_view()),   # course_id, student_id
+    url(r'^course/getEnrolledStudents/$', GetEnrolledStudentsByCourseIdListAPIView.as_view()),
+    url(r'^course/getEnrolledCourses/$', GetEnrolledCoursesByStudentIdListAPIView.as_view())
 
 
 ]
