@@ -1,5 +1,4 @@
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework.generics import (
     ListAPIView,
     CreateAPIView,
@@ -11,27 +10,6 @@ from rest_framework.views import APIView
 from ..models import Student, Course
 from .serializers import StudentSerializer
 from ..course.serializers import CourseDetailSerializer
-
-
-@csrf_exempt
-def enroll(request):
-    try:
-        course_id = request.POST['course_id']
-        student_id = request.POST['student_id']
-
-        course = Course.objects.filter(course_id=course_id).first()
-        student = Student.objects.filter(student_id=student_id).first()
-
-        if not course:
-            return JsonResponse({'msg': 'failure'}, {'detail': 'Invalid course'})
-        if not student:
-            return JsonResponse({'msg': 'failure'}, {'detail': 'Invalid Student'})
-
-        course.students.add(student)
-        return JsonResponse({'msg': 'success'})
-
-    except Exception as e:
-        return JsonResponse({'msg': 'failure'}, {'detail': e})
 
 
 class EnrollInCourse(APIView):
