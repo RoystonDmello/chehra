@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+# from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate
@@ -105,12 +105,7 @@ class Login(APIView):
             print(e)
             return Response({'Error': "Invalid username/password"}, status="400")
 
-        errorResponse = JsonResponse(
-                    json.dumps({'Error': "Invalid credentials"}),
-                    status=400,
-                    content_type="application/json",
-                    safe=False
-                )
+        errorResponse = Response({'Error': "Invalid credentials"})
 
         if is_teacher:
             if teacher:
@@ -129,14 +124,8 @@ class Login(APIView):
             else:
                 return errorResponse
 
-        jwt_token = {'token': jwt.encode(payload, "SECRET_KEY")}
-        serialized_data = jsonpickle.encode(jwt_token)
-        return JsonResponse(
-            serialized_data,
-            status=200,
-            content_type="application/json",
-            safe=False
-        )
+        token = jwt.encode(payload, "SECRET_KEY")
+        return Response({'token': token})
 
 
 class StudentImageCreateAPIView(CreateAPIView):
