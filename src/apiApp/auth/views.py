@@ -22,7 +22,7 @@ class Register(APIView):
 
     def post(self, request, *args, **kwargs):
         if not request.POST:
-            return Response({'Error': "Please provide username/password"}, status="400")
+            return Response({'Error': "Please provide username/password", 'msg': 'failure'})
 
         email = request.POST.get('email')
         username = request.POST.get('username')
@@ -51,34 +51,21 @@ class Register(APIView):
                 instance.dept_id = department
                 instance.save()
 
-            response = {
-                'msg': 'success'
-            }
-            return JsonResponse(
-                    response,
-                    status=200,
-                    content_type="application/json",
-                    safe=False
-            )
+            return Response({'msg': 'success'})
         except Exception as e:
-            response = {
-                'msg': 'failure',
-                'Error': e
-            }
-            serialized_response = jsonpickle.encode(response)
-            return JsonResponse(
-                    serialized_response,
-                    status=400,
-                    content_type="application/json",
-                    safe=False
-                )
+            return Response(
+                {
+                    'msg': 'failure',
+                    'Error': e
+                }
+            )
 
 
 class Login(APIView):
 
     def post(self, request, *args, **kwargs):
         if not request.POST:
-            return Response({'Error': "Please provide username/password"}, status="400")
+            return Response({'Error': "Please provide username/password", 'msg': 'failure'})
 
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -103,9 +90,9 @@ class Login(APIView):
 
         except Exception as e:
             print(e)
-            return Response({'Error': "Invalid username/password"}, status="400")
+            return Response({'Error': "Invalid username/password", 'msg': 'failure'})
 
-        errorResponse = Response({'Error': "Invalid credentials"})
+        errorResponse = Response({'Error': "Invalid credentials", 'msg': 'failure'})
 
         if is_teacher:
             if teacher:
