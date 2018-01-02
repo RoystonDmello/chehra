@@ -22,7 +22,7 @@ class Register(APIView):
 
     def post(self, request, *args, **kwargs):
         if not request.POST:
-            return Response({'Error': "Please provide username/password", 'msg': 'failure'})
+            return Response({'Error': "Please provide username/password", 'msg': 'failure'}, status=400)
 
         email = request.POST.get('email')
         username = request.POST.get('username')
@@ -57,7 +57,7 @@ class Register(APIView):
                 {
                     'msg': 'failure',
                     'Error': e
-                }
+                }, status=400
             )
 
 
@@ -65,7 +65,7 @@ class Login(APIView):
 
     def post(self, request, *args, **kwargs):
         if not request.POST:
-            return Response({'Error': "Please provide username/password", 'msg': 'failure'})
+            return Response({'Error': "Please provide username/password", 'msg': 'failure'}, status=400)
 
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -90,9 +90,9 @@ class Login(APIView):
 
         except Exception as e:
             print(e)
-            return Response({'Error': "Invalid username/password", 'msg': 'failure'})
+            return Response({'Error': "Invalid username/password", 'msg': 'failure'}, status=401)
 
-        errorResponse = Response({'Error': "Invalid credentials", 'msg': 'failure'})
+        errorResponse = Response({'Error': "Invalid credentials", 'msg': 'failure'}, status=401)
 
         if is_teacher:
             if teacher:
