@@ -24,13 +24,13 @@ from ..models import Course, Teacher, Department
 class CourseCreateAPIView(CreateAPIView):
     queryset = Course.objects.all()
     serializer_class = CourseCreateSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = []
 
 
 class CourseListAPIView(ListAPIView):
     queryset = Course.objects.all()
     serializer_class = CourseDetailSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = []
 
 
 class CourseListByTeacherIdAPIView(ListAPIView):
@@ -55,16 +55,16 @@ class CourseListByDeptIdAPIView(ListAPIView):
 class CourseDetailAPIView(RetrieveAPIView):
     queryset = Course.objects.all()
     serializer_class = CourseDetailSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = []
 
 
 class CourseUpdateAPIView(UpdateAPIView):
     queryset = Course.objects.all()
     serializer_class = CourseCreateSerializer
-    permission_classes = [IsAuthenticated, IsUserTeacherOfCourse]
+    permission_classes = [IsUserTeacherOfCourse]
 
 
 class CourseDeleteAPIView(DestroyAPIView):
     queryset = Course.objects.all()
     serializer_class = CourseCreateSerializer
-    permission_classes = [IsAuthenticated, IsUserTeacherOfCourse]
+    permission_classes = [IsUserTeacherOfCourse]
