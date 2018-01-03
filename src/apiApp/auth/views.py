@@ -12,10 +12,20 @@ from rest_framework.generics import (
     DestroyAPIView
 )
 
-import jwt, json, jsonpickle
+from rest_framework_jwt.settings import api_settings
+import json, jsonpickle
 
-from .serializers import StudentImageSerializer
+from .serializers import StudentImageSerializer, UserSerializer
 from ..models import Teacher, Student, Department, StudentImage
+
+
+def get_jwt(user):
+    jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+    jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
+    payload = jwt_payload_handler(user)
+    token = jwt_encode_handler(payload)
+    return token
 
 
 class Register(APIView):
@@ -27,6 +37,8 @@ class Register(APIView):
         email = request.POST.get('email')
         username = request.POST.get('username')
         password = request.POST.get('password')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
         is_teacher = request.POST.get('isTeacher')
 
         if is_teacher == 'False' or is_teacher == 'false' or is_teacher == 0 or is_teacher == '0':
@@ -35,7 +47,7 @@ class Register(APIView):
             is_teacher = True
 
         try:
-            user = User.objects.create(email=email, username=username)
+            user = User.objects.create(email=email, username=username, first_name= first_name, last_name= last_name)
             user.set_password(password)
             user.save()
 
@@ -56,7 +68,7 @@ class Register(APIView):
             return Response(
                 {
                     'msg': 'failure',
-                    'Error': e
+                    'Error': e.__str__()
                 }, status=400
             )
 
@@ -78,41 +90,27 @@ class Login(APIView):
 
         try:
             user = authenticate(username=username, password=password)
-            if is_teacher == 'False' or is_teacher == 'false' or is_teacher == 0 or is_teacher == '0':
-                is_teacher = False
-            else:
-                is_teacher = True
 
             if is_teacher:
                 teacher = Teacher.objects.get(user=user)
+                id = teacher.teacher_id
             else:
                 student = Student.objects.get(user=user)
+                id = student.student_id
 
         except Exception as e:
             print(e)
             return Response({'Error': "Invalid username/password", 'msg': 'failure'}, status=401)
 
-        errorResponse = Response({'Error': "Invalid credentials", 'msg': 'failure'}, status=401)
-
-        if is_teacher:
-            if teacher:
-                payload = {
-                    'id': teacher.teacher_id,
-                    'email': teacher.user.email,
-                }
-            else:
-                return errorResponse
-        else:
-            if student:
-                payload = {
-                    'id': student.student_id,
-                    'email': student.user.email,
-                }
-            else:
-                return errorResponse
-
-        token = jwt.encode(payload, "SECRET_KEY")
-        return Response({'token': token})
+        token = get_jwt(user)
+        return Response({'token': token,
+                         'id': id,
+                         'is_teacher': is_teacher,
+                         'username': user.username,
+                         'email': user.email,
+                         'first_name': user.first_name,
+                         'last_name': user.last_name
+                         })
 
 
 class StudentImageCreateAPIView(CreateAPIView):
