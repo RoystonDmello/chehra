@@ -58,6 +58,9 @@ class Course(models.Model):
 
     students = models.ManyToManyField(Student)
 
+    class Meta:
+        unique_together = ('name', 'academic_yr', 'year', 'teacher_id')
+
     # for python 2
     def __unicode__(self):
         return self.name

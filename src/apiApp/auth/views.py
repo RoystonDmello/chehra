@@ -11,7 +11,12 @@ from rest_framework.generics import (
     UpdateAPIView,
     DestroyAPIView
 )
-
+from rest_framework.permissions import (
+    AllowAny,
+    IsAuthenticated,
+    IsAdminUser,
+    IsAuthenticatedOrReadOnly
+)
 from rest_framework_jwt.settings import api_settings
 import json, jsonpickle
 
@@ -30,6 +35,9 @@ def get_jwt(user):
 
 class Register(APIView):
 
+    permission_classes = (AllowAny,)
+    authentication_classes = []
+
     def post(self, request, *args, **kwargs):
         if not request.POST:
             return Response({'Error': "Please provide username/password", 'msg': 'failure'}, status=400)
@@ -41,13 +49,11 @@ class Register(APIView):
         last_name = request.POST.get('last_name')
         is_teacher = request.POST.get('isTeacher')
 
-        if is_teacher == 'False' or is_teacher == 'false' or is_teacher == 0 or is_teacher == '0':
-            is_teacher = False
-        else:
-            is_teacher = True
+        is_teacher = not (is_teacher == 'False' or is_teacher == 'false' or is_teacher == 0 or is_teacher == '0')
 
         try:
-            user = User.objects.create(email=email, username=username, first_name= first_name, last_name= last_name)
+            user = User.objects.create(email=email, username=username,
+                                       first_name=first_name, last_name=last_name)
             user.set_password(password)
             user.save()
 
@@ -65,6 +71,11 @@ class Register(APIView):
 
             return Response({'msg': 'success'})
         except Exception as e:
+            print("Exception caught")
+            user = User.objects.get(username=username)
+            if user:
+                user.delete()
+
             return Response(
                 {
                     'msg': 'failure',
@@ -75,6 +86,9 @@ class Register(APIView):
 
 class Login(APIView):
 
+    permission_classes = (AllowAny,)
+    authentication_classes = []
+
     def post(self, request, *args, **kwargs):
         if not request.POST:
             return Response({'Error': "Please provide username/password", 'msg': 'failure'}, status=400)
@@ -83,11 +97,9 @@ class Login(APIView):
         password = request.POST.get('password')
         is_teacher = request.POST.get('isTeacher')
 
-        if is_teacher == 'False' or is_teacher == 'false' or is_teacher == 0 or is_teacher == '0':
-            is_teacher = False
-        else:
-            is_teacher = True
+        is_teacher = not (is_teacher == 'False' or is_teacher == 'false' or is_teacher == 0 or is_teacher == '0')
 
+        print(is_teacher)
         try:
             user = authenticate(username=username, password=password)
 
@@ -100,17 +112,18 @@ class Login(APIView):
 
         except Exception as e:
             print(e)
-            return Response({'Error': "Invalid username/password", 'msg': 'failure'}, status=401)
+            try:
+                User.objects.get(username=username).delete()
+            except Exception as e:
+                return Response({'msg': 'failure', 'error': 'Invalid username or password'}, status=401)
+
+            return Response({'msg': 'failure', 'error': e.__str__()}, status=401)
 
         token = get_jwt(user)
-        return Response({'token': token,
-                         'id': id,
+        return Response({'token': token, 'id': id,
                          'is_teacher': is_teacher,
-                         'username': user.username,
-                         'email': user.email,
-                         'first_name': user.first_name,
-                         'last_name': user.last_name
-                         })
+                         'user': UserSerializer(user).data
+                         }, status=200)
 
 
 class StudentImageCreateAPIView(CreateAPIView):
@@ -136,3 +149,7 @@ class StudentImageDeleteAPIView(DestroyAPIView):
     queryset = StudentImage.objects.all()
 
 
+'''
+curl -X GET -H "Authorization: JWT <token>" -H "Content-Type:application/json" http://127.0.0.1:8000/api/course/get/?dept_id=2&teacher_id=1&name=Computer%20Networks&academic_yr=2017&year=3
+
+'''

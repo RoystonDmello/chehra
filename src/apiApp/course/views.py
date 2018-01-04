@@ -5,13 +5,15 @@ from rest_framework.generics import (
     UpdateAPIView,
     DestroyAPIView
 )
+
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework.permissions import (
     AllowAny,
     IsAuthenticated,
     IsAdminUser,
     IsAuthenticatedOrReadOnly
 )
-from ..permissions import IsUserTeacherOfCourse
+from ..permissions import IsUserTeacherOfCourse, IsTeacher
 from .serializers import (
     CourseCreateSerializer,
     CourseDetailSerializer
@@ -22,19 +24,22 @@ from ..models import Course, Teacher, Department
 
 # don't change variable names
 class CourseCreateAPIView(CreateAPIView):
+    permission_classes = (IsAuthenticated, IsTeacher)
+    authentication_classes = (JSONWebTokenAuthentication,)
     queryset = Course.objects.all()
     serializer_class = CourseCreateSerializer
-    permission_classes = []
 
 
 class CourseListAPIView(ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (JSONWebTokenAuthentication,)
     queryset = Course.objects.all()
     serializer_class = CourseDetailSerializer
-    permission_classes = []
 
 
 class CourseListByTeacherIdAPIView(ListAPIView):
-    # queryset = Course.objects.filter()
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (JSONWebTokenAuthentication,)
     serializer_class = CourseDetailSerializer
 
     def get_queryset(self, *args, **kwargs):
@@ -44,6 +49,8 @@ class CourseListByTeacherIdAPIView(ListAPIView):
 
 
 class CourseListByDeptIdAPIView(ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (JSONWebTokenAuthentication,)
     serializer_class = CourseDetailSerializer
 
     def get_queryset(self, *args, **kwargs):
@@ -53,18 +60,21 @@ class CourseListByDeptIdAPIView(ListAPIView):
 
 
 class CourseDetailAPIView(RetrieveAPIView):
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (JSONWebTokenAuthentication,)
     queryset = Course.objects.all()
     serializer_class = CourseDetailSerializer
-    permission_classes = []
 
 
 class CourseUpdateAPIView(UpdateAPIView):
+    permission_classes = (IsAuthenticated, IsUserTeacherOfCourse)
+    authentication_classes = JSONWebTokenAuthentication
     queryset = Course.objects.all()
     serializer_class = CourseCreateSerializer
-    permission_classes = [IsUserTeacherOfCourse]
 
 
 class CourseDeleteAPIView(DestroyAPIView):
+    permission_classes = (IsAuthenticated, IsUserTeacherOfCourse)
+    authentication_classes = (JSONWebTokenAuthentication,)
     queryset = Course.objects.all()
     serializer_class = CourseCreateSerializer
-    permission_classes = [IsUserTeacherOfCourse]
