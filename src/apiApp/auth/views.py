@@ -41,13 +41,11 @@ class Register(APIView):
         last_name = request.POST.get('last_name')
         is_teacher = request.POST.get('isTeacher')
 
-        if is_teacher == 'False' or is_teacher == 'false' or is_teacher == 0 or is_teacher == '0':
-            is_teacher = False
-        else:
-            is_teacher = True
+        is_teacher = (is_teacher == 'False' or is_teacher == 'false' or is_teacher == 0 or is_teacher == '0')
 
         try:
-            user = User.objects.create(email=email, username=username, first_name= first_name, last_name= last_name)
+            user = User.objects.create(email=email, username=username,
+                                       first_name=first_name, last_name=last_name)
             user.set_password(password)
             user.save()
 
@@ -83,10 +81,8 @@ class Login(APIView):
         password = request.POST.get('password')
         is_teacher = request.POST.get('isTeacher')
 
-        if is_teacher == 'False' or is_teacher == 'false' or is_teacher == 0 or is_teacher == '0':
-            is_teacher = False
-        else:
-            is_teacher = True
+        is_teacher = (is_teacher == 'False' or is_teacher == 'false' or is_teacher == 0 or is_teacher == '0')
+
 
         try:
             user = authenticate(username=username, password=password)
@@ -103,14 +99,10 @@ class Login(APIView):
             return Response({'Error': "Invalid username/password", 'msg': 'failure'}, status=401)
 
         token = get_jwt(user)
-        return Response({'token': token,
-                         'id': id,
+        return Response({'token': token, 'id': id,
                          'is_teacher': is_teacher,
-                         'username': user.username,
-                         'email': user.email,
-                         'first_name': user.first_name,
-                         'last_name': user.last_name
-                         })
+                         'user': UserSerializer(user).data
+                         }, status=200)
 
 
 class StudentImageCreateAPIView(CreateAPIView):
