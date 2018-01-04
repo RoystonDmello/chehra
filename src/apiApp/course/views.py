@@ -29,17 +29,6 @@ class CourseCreateAPIView(CreateAPIView):
     queryset = Course.objects.all()
     serializer_class = CourseCreateSerializer
 
-    '''
-    def perform_create(self, serializer):
-        print("1")
-        teacher = Teacher.objects.filter(user=self.request.user)
-        print("2")
-        serializer['teacher_id'] = teacher.teacher_id
-        print("3")
-        serializer.save()
-        print("4")
-    '''
-
 
 class CourseListAPIView(ListAPIView):
     permission_classes = (IsAuthenticated,)

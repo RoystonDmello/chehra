@@ -11,9 +11,20 @@ from ..views import markAttendance, isStudentEnrolledInCourse
 from ..models import Lecture, Student
 from ..auth.serializers import StudentSerializer
 from ..lecture.serializers import LectureListSerializer
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from ..permissions import IsTeacher
+from rest_framework.permissions import (
+    AllowAny,
+    IsAuthenticated,
+    IsAdminUser,
+    IsAuthenticatedOrReadOnly
+)
 
 
 class MarkAttendanceAPIView(APIView):
+    authentication_classes = (JSONWebTokenAuthentication,)
+    permission_classes = [IsAuthenticated, IsTeacher]
+
     def post(self, request, *args, **kwargs):
         try:
             lect_id = request.POST['lect_id']
@@ -41,6 +52,8 @@ class MarkAttendanceAPIView(APIView):
 class StudentListByLectureIdListAPIView(ListAPIView):
 
     serializer_class = StudentSerializer
+    authentication_classes = (JSONWebTokenAuthentication,)
+    permission_classes = [IsAuthenticated, IsTeacher]
 
     def get_queryset(self, *args, **kwargs):
         lect_id = self.request.GET['lect_id']
@@ -50,6 +63,8 @@ class StudentListByLectureIdListAPIView(ListAPIView):
 class LectureByStudentIdListAPIView(ListAPIView):
 
     serializer_class = LectureListSerializer
+    authentication_classes = (JSONWebTokenAuthentication,)
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self, *args, **kwargs):
         student_id = self.request.GET['student_id']
