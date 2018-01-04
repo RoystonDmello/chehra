@@ -1,5 +1,5 @@
 from rest_framework.permissions import BasePermission
-from .models import Teacher
+from .models import Teacher, Student
 
 
 class IsUserTeacherOfCourse(BasePermission):
@@ -14,6 +14,16 @@ class IsUserTeacherOfCourse(BasePermission):
 class IsTeacher(BasePermission):
     message = "You are not a teacher"
 
-    def has_object_permission(self, request, view, obj):
+    def has_permission(self, request, view):
         num_results = Teacher.objects.filter(user=request.user).count()
         return num_results == 1
+
+
+class IsStudent(BasePermission):
+    message = "You are not a student"
+
+    def has_permission(self, request, view):
+        num_results = Student.objects.filter(user=request.user).count()
+        return num_results == 1
+
+
