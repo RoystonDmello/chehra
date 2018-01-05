@@ -17,7 +17,7 @@ from rest_framework.permissions import (
     IsAuthenticatedOrReadOnly
 )
 from rest_framework_jwt.settings import api_settings
-from .serializers import StudentImageSerializer, UserSerializer
+from .serializers import StudentImageSerializer, UserSerializer, StudentSerializer, TeacherSerializer
 from ..models import Teacher, Student, Department, StudentImage
 
 
@@ -118,8 +118,16 @@ class Login(APIView):
             return Response({'msg': 'failure', 'error': e.__str__()}, status=401)
 
         token = get_jwt(user)
-        return Response({'token': token, 'id': id,
+        if not is_teacher:
+            return Response({'token': token,
+                             'is_teacher': is_teacher,
+                             'student': StudentSerializer(student).data,
+                             'user': UserSerializer(user).data
+                             }, status=200)
+            return
+        return Response({'token': token,
                          'is_teacher': is_teacher,
+                         'teacher': TeacherSerializer(teacher).data ,
                          'user': UserSerializer(user).data
                          }, status=200)
 

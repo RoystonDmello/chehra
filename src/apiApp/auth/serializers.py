@@ -1,4 +1,4 @@
-from ..models import Student, StudentImage
+from ..models import Student, StudentImage, Teacher
 from rest_framework.serializers import ModelSerializer
 from ..models import User
 
@@ -13,6 +13,12 @@ class StudentSerializer(ModelSerializer):
     class Meta:
         model = Student
         fields = ['student_id', 'user', 'uid', 'dept_id']
+
+
+class TeacherSerializer(ModelSerializer):
+    class Meta:
+        model = Teacher
+        fields = ['teacher_id', 'user']
 
 
 class StudentImageSerializer(ModelSerializer):
