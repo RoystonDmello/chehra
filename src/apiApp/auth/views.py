@@ -101,8 +101,11 @@ class Login(APIView):
 
         print(is_teacher)
         try:
-            user = UserBackend.authenticate(self=self, email=email, password=password)
-
+            user, user_exists = UserBackend.authenticate(self=self, email=email, password=password)
+            if (not user) and user_exists:
+                return Response({'msg': 'failure', 'error': 'Wrong password'})
+            elif (not user) and not user_exists:
+                return Response({'msg': 'failure', 'error': 'User not found'})
             if is_teacher:
                 teacher = Teacher.objects.filter(user=user).first()
                 id = teacher.teacher_id
