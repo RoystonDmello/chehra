@@ -59,7 +59,7 @@ class Course(models.Model):
     students = models.ManyToManyField(Student)
 
     class Meta:
-        unique_together = ('name', 'academic_yr', 'year', 'teacher_id')
+        unique_together = ('name','dept_id', 'academic_yr', 'year', 'teacher_id')
 
     # for python 2
     def __unicode__(self):
@@ -95,22 +95,19 @@ def upload_location(instance, filename):
     return "%s/%s" % (instance.student_id, filename)
 
 
-class StudentImage(models.Model):
-    image_id = models.AutoField(primary_key=True)
+class StudentVideo(models.Model):
+    video_id = models.AutoField(primary_key=True)
     student_id = models.ForeignKey('Student', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to=upload_location)
+    video = models.FileField(upload_to=upload_location)
     type = models.IntegerField()
-
-    class Meta:
-        unique_together = ('student_id', 'type')
 
     # for python 2
     def __unicode__(self):
-        return str(self.image_id)
+        return str(self.video_id)
 
     # for python 3
     def __str__(self):
-        return str(self.image_id)
+        return str(self.video_id)
 
 
 

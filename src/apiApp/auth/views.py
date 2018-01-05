@@ -21,7 +21,7 @@ from rest_framework_jwt.settings import api_settings
 import json, jsonpickle
 
 from .serializers import StudentImageSerializer, UserSerializer
-from ..models import Teacher, Student, Department, StudentImage
+from ..models import Teacher, Student, Department, StudentVideo
 
 
 def get_jwt(user):
@@ -128,12 +128,12 @@ class Login(APIView):
 
 class StudentImageCreateAPIView(CreateAPIView):
     serializer_class = StudentImageSerializer
-    queryset = StudentImage.objects.all()
+    queryset = StudentVideo.objects.all()
 
 
 class StudentImageUpdateAPIView(UpdateAPIView):
     serializer_class = StudentImageSerializer
-    queryset = StudentImage.objects.all()
+    queryset = StudentVideo.objects.all()
 
 
 class StudentImageGetListAPIView(ListAPIView):
@@ -141,12 +141,12 @@ class StudentImageGetListAPIView(ListAPIView):
 
     def get_queryset(self, *args, **kwargs):
         student_id = self.request.GET['student_id']
-        return StudentImage.objects.filter(student_id=student_id)
+        return StudentVideo.objects.filter(student_id=student_id)
 
 
 class StudentImageDeleteAPIView(DestroyAPIView):
     serializer_class = StudentImageSerializer
-    queryset = StudentImage.objects.all()
+    queryset = StudentVideo.objects.all()
 
 
 '''

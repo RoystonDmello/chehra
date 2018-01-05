@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import (
     Teacher, Student,
     Department, Course,
-    Lecture, StudentImage
+    Lecture, StudentVideo
 )
 
 
@@ -41,4 +41,4 @@ admin.site.register(Student, StudentAdminModel)
 admin.site.register(Department, DepartmentAdminModel)
 admin.site.register(Course, CourseAdminModel)
 admin.site.register(Lecture, LectureAdminModel)
-admin.site.register(StudentImage, StudentImageAdminModel)
+admin.site.register(StudentVideo, StudentImageAdminModel)

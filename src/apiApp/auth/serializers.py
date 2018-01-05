@@ -1,4 +1,4 @@
-from ..models import Student, StudentImage
+from ..models import Student, StudentVideo
 from rest_framework.serializers import ModelSerializer
 from django.contrib.auth.models import User
 
@@ -17,5 +17,5 @@ class StudentSerializer(ModelSerializer):
 
 class StudentImageSerializer(ModelSerializer):
     class Meta:
-        model = StudentImage
+        model = StudentVideo
         fields = ['image_id', 'student_id', 'image', 'type']
