@@ -25,7 +25,7 @@ SECRET_KEY = 'c8j)neztzn*jzk$lt9a2irciz%6c85jl^fm!1axxjypc_*)zj7'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.31.119', '127.0.0.1']
+ALLOWED_HOSTS = ['192.168.31.119', '127.0.0.1', '192.168.0.102']
 
 
 # Application definition
@@ -148,6 +148,8 @@ REST_FRAMEWORK = {
     )
 
 }
+
+AUTH_USER_MODEL = 'apiApp.User'
 
 JWT_AUTH = {
     'JWT_VERIFY_EXPIRATION': False,
