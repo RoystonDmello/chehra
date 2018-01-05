@@ -108,10 +108,9 @@ class Login(APIView):
                 return Response({'msg': 'failure', 'error': 'User not found'})
             if is_teacher:
                 teacher = Teacher.objects.filter(user=user).first()
-                id = teacher.teacher_id
+
             else:
                 student = Student.objects.filter(user=user).first()
-                id = student.student_id
 
         except Exception as e:
             print(e)
@@ -124,10 +123,9 @@ class Login(APIView):
                              'student': StudentSerializer(student).data,
                              'user': UserSerializer(user).data
                              }, status=200)
-            return
         return Response({'token': token,
                          'is_teacher': is_teacher,
-                         'teacher': TeacherSerializer(teacher).data ,
+                         'teacher': TeacherSerializer(teacher).data,
                          'user': UserSerializer(user).data
                          }, status=200)
 
