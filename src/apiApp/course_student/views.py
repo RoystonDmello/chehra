@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from rest_framework.response import Response
 from rest_framework.generics import (
     ListAPIView,
     CreateAPIView,
@@ -14,7 +15,7 @@ from rest_framework.permissions import (
 )
 from rest_framework.views import APIView
 from ..models import Student, Course
-from ..auth.serializers import StudentSerializer
+from ..auth.serializers import StudentSerializer, UserSerializer
 from ..course.serializers import CourseDetailSerializer
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
@@ -44,16 +45,29 @@ class EnrollInCourse(APIView):
             return JsonResponse({'msg': 'failure'}, {'detail': e})
 
 
+class GetEnrolledStudentsByCourseIdListAPIView(APIView):
+
+    permission_classes = (IsAuthenticated, IsTeacher)
+    authentication_classes = (JSONWebTokenAuthentication,)
+
+    def get(self, format=None):
+        course_id = self.request.GET['course_id']
+        students = Student.objects.filter(course=course_id)
+        serializer = StudentSerializer(students, many=True)
+        return Response(serializer.data)
+
+
+'''
 class GetEnrolledStudentsByCourseIdListAPIView(ListAPIView):
-    serializer_class = StudentSerializer
+    serializer_class = StudentSerializer(many=True)
     permission_classes = (IsAuthenticated, IsTeacher)
     authentication_classes = (JSONWebTokenAuthentication,)
 
     def get_queryset(self, *args, **kwargs):
         course_id = self.request.GET['course_id']
         queryset = Student.objects.filter(course=course_id)
-        print(queryset)
         return queryset
+'''
 
 
 class GetEnrolledCoursesByStudentIdListAPIView(ListAPIView):

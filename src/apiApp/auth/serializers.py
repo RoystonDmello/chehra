@@ -10,9 +10,22 @@ class UserSerializer(ModelSerializer):
 
 
 class StudentSerializer(ModelSerializer):
+
+    user = UserSerializer(required=True)
+
     class Meta:
         model = Student
-        fields = ['student_id', 'user', 'uid', 'dept_id']
+        fields = ['student_id', 'uid', 'dept_id', 'user']
+
+    def create(self, validated_data):
+        user_data = validated_data.pop('user')
+        user = UserSerializer.create(UserSerializer(), validated_data=user_data)
+        student = Student.objects.update_or_create(
+            user=user,
+            uid=validated_data.pop('uid'),
+            dept_id=validated_data.pop('dept_id')
+        )
+        return student
 
 
 class TeacherSerializer(ModelSerializer):
