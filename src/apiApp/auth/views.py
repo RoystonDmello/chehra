@@ -1,8 +1,16 @@
 # from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile, File
+
+from tempfile import TemporaryFile
+import numpy as np
+
+from chera import preprocessing
 
 from rest_framework.generics import (
     ListAPIView,
@@ -20,8 +28,8 @@ from rest_framework.permissions import (
 from rest_framework_jwt.settings import api_settings
 import json, jsonpickle
 
-from .serializers import StudentImageSerializer, UserSerializer
-from ..models import Teacher, Student, Department, StudentVideo
+from .serializers import StudentDataSerializer, UserSerializer
+from ..models import Teacher, Student, Department, StudentData
 
 
 def get_jwt(user):
@@ -115,7 +123,9 @@ class Login(APIView):
             try:
                 User.objects.get(username=username).delete()
             except Exception as e:
-                return Response({'msg': 'failure', 'error': 'Invalid username or password'}, status=401)
+                return Response({'msg': 'failure',
+                                 'error': 'Invalid username or password'},
+                                status=401)
 
             return Response({'msg': 'failure', 'error': e.__str__()}, status=401)
 
@@ -126,27 +136,55 @@ class Login(APIView):
                          }, status=200)
 
 
-class StudentImageCreateAPIView(CreateAPIView):
-    serializer_class = StudentImageSerializer
-    queryset = StudentVideo.objects.all()
+class StudentDataCreateAPIView(APIView):
+    parser_classes = (MultiPartParser,)
+    temp = 'temp'
+
+    def post(self, request):
+        video = request.data['video']
+        path = default_storage.save(self.temp, ContentFile(video.read()))
+        full_path = default_storage.path(path)
+
+        dataset = preprocessing.generate_dataset(full_path)
+
+        if not len(dataset):
+            return Response({'msg': 'failure',
+                             'error': 'No face found in the video'}, status=401)
+
+        outfile = TemporaryFile()
+        np.save(outfile, dataset)
+
+        username = request.data['username']
+
+        user = User.objects.filter(username=username).first()
+        student = user.student
+
+        f = File(outfile, '{0}.npy'.format(username))
+
+        instance = StudentData(student_id=student, data=f)
+        instance.save()
+
+        default_storage.delete(path)
+
+        return Response({'msg': 'success'})
 
 
-class StudentImageUpdateAPIView(UpdateAPIView):
-    serializer_class = StudentImageSerializer
-    queryset = StudentVideo.objects.all()
+class StudentDataUpdateAPIView(UpdateAPIView):
+    serializer_class = StudentDataSerializer
+    queryset = StudentData.objects.all()
 
 
-class StudentImageGetListAPIView(ListAPIView):
-    serializer_class = StudentImageSerializer
+class StudentDataGetListAPIView(ListAPIView):
+    serializer_class = StudentDataSerializer
 
     def get_queryset(self, *args, **kwargs):
         student_id = self.request.GET['student_id']
-        return StudentVideo.objects.filter(student_id=student_id)
+        return StudentData.objects.filter(student_id=student_id)
 
 
-class StudentImageDeleteAPIView(DestroyAPIView):
-    serializer_class = StudentImageSerializer
-    queryset = StudentVideo.objects.all()
+class StudentDataDeleteAPIView(DestroyAPIView):
+    serializer_class = StudentDataSerializer
+    queryset = StudentData.objects.all()
 
 
 '''

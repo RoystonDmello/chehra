@@ -13,14 +13,15 @@ from rest_framework.permissions import (
 )
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from .serializers import LectureCreateSerializer, LectureListSerializer
-from ..permissions import IsTeacher
+from ..permissions import IsTeacher, IsCourseEnrollmentComplete
 from ..models import Lecture
 
 
 class LectureCreateAPIView(CreateAPIView):
     queryset = Lecture.objects.all()
     serializer_class = LectureCreateSerializer
-    permission_classes = [IsAuthenticated, IsTeacher]
+    permission_classes = [IsAuthenticated, IsTeacher,
+                          IsCourseEnrollmentComplete]
     authentication_classes = (JSONWebTokenAuthentication,)
 
 

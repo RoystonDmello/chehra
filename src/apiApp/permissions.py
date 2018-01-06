@@ -1,5 +1,5 @@
 from rest_framework.permissions import BasePermission
-from .models import Teacher, Student
+from .models import Teacher, Student, Course
 
 
 class IsUserTeacherOfCourse(BasePermission):
@@ -27,3 +27,10 @@ class IsStudent(BasePermission):
         return num_results == 1
 
 
+class IsCourseEnrollmentComplete(BasePermission):
+    message = "The course has not completed enrollment"
+
+    def has_permission(self, request, view):
+        course = Course.objects.filter(course_id=request.course_id)
+
+        return course.enrollment_complete

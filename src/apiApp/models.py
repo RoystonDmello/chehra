@@ -55,6 +55,7 @@ class Course(models.Model):
     year = models.IntegerField(null=False)  # 1->First Year, 2->Second Year
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
+    enrollment_complete = models.BooleanField(default=False)
 
     students = models.ManyToManyField(Student)
 
@@ -92,22 +93,18 @@ class Lecture(models.Model):
 
 # for class student images
 def upload_location(instance, filename):
-    return "%s/%s" % (instance.student_id, filename)
+    return "training_data/%s" % (filename)
 
 
-class StudentVideo(models.Model):
-    video_id = models.AutoField(primary_key=True)
-    student_id = models.ForeignKey('Student', on_delete=models.CASCADE)
-    video = models.FileField(upload_to=upload_location)
-    type = models.IntegerField()
+class StudentData(models.Model):
+    data_id = models.AutoField(primary_key=True)
+    student_id = models.OneToOneField('Student', on_delete=models.CASCADE)
+    data = models.FileField(upload_to=upload_location)
 
     # for python 2
     def __unicode__(self):
-        return str(self.video_id)
+        return str(self.data_id)
 
     # for python 3
     def __str__(self):
-        return str(self.video_id)
-
-
-
+        return str(self.data_id)
