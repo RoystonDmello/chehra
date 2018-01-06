@@ -147,11 +147,11 @@ class Lecture(models.Model):
 
     # for python 2
     def __unicode__(self):
-        return self.lect_id
+        return str(self.lect_id)
 
     # for python 3
     def __str__(self):
-        return self.lect_id
+        return str(self.lect_id)
 
 
 # for class student images

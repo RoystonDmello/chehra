@@ -83,4 +83,5 @@ urlpatterns = [
     url(r'^lecture/getPresentStudents/$', StudentListByLectureIdListAPIView.as_view()),
     url(r'^lecture/getLecturesByStudentId', LectureByStudentIdListAPIView.as_view())
 
+
 ]
