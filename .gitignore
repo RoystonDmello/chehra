@@ -1,0 +1,15 @@
+.idea/
+.idea/inspectionProfiles/
+.idea/vcs.xml
+media_cdn/
+src/AttendanceManager/__pycache__/
+src/apiApp/__pycache__/
+src/apiApp/auth/__pycache__/
+src/apiApp/course/__pycache__/
+src/apiApp/course_student/__pycache__/
+src/apiApp/department/__pycache__/
+src/apiApp/lecture/__pycache__/
+src/apiApp/lecture_student/__pycache__/
+src/apiApp/migrations/__pycache__/
+src/chera/__pycache__/
+migrations
