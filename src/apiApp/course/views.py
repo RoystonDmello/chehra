@@ -54,7 +54,7 @@ class CourseListByDeptIdAPIView(ListAPIView):
     serializer_class = CourseDetailSerializer
 
     def get_queryset(self, *args, **kwargs):
-        department = Department.objects.filter(dept_id=self.request.POST['dept_id']).first()
+        department = Department.objects.filter(dept_id=self.request.GET['dept_id']).first()
         queryset = Course.objects.filter(dept_id=department)
         return queryset
 

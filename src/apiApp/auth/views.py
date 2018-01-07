@@ -1,4 +1,3 @@
-# from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser
@@ -6,6 +5,8 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile, File
+from ..custom_user_backend import UserBackend
+from django.contrib.auth import get_user_model
 
 from tempfile import TemporaryFile
 import numpy as np
@@ -26,10 +27,14 @@ from rest_framework.permissions import (
     IsAuthenticatedOrReadOnly
 )
 from rest_framework_jwt.settings import api_settings
+
 import json, jsonpickle
 
-from .serializers import StudentDataSerializer, UserSerializer
+from .serializers import StudentDataSerializer, UserSerializer, TeacherSerializer
 from ..models import Teacher, Student, Department, StudentData
+
+
+User = get_user_model()
 
 
 def get_jwt(user):
@@ -99,9 +104,9 @@ class Login(APIView):
 
     def post(self, request, *args, **kwargs):
         if not request.POST:
-            return Response({'Error': "Please provide username/password", 'msg': 'failure'}, status=400)
+            return Response({'Error': "Please provide email/password", 'msg': 'failure'}, status=400)
 
-        username = request.POST.get('username')
+        email = request.POST.get('email')
         password = request.POST.get('password')
         is_teacher = request.POST.get('isTeacher')
 
@@ -109,29 +114,31 @@ class Login(APIView):
 
         print(is_teacher)
         try:
-            user = authenticate(username=username, password=password)
-
+            user, user_exists = UserBackend.authenticate(self=self, email=email, password=password)
+            if (not user) and user_exists:
+                return Response({'msg': 'failure', 'error': 'Wrong password'})
+            elif (not user) and not user_exists:
+                return Response({'msg': 'failure', 'error': 'User not found'})
             if is_teacher:
-                teacher = Teacher.objects.get(user=user)
-                id = teacher.teacher_id
+                teacher = Teacher.objects.filter(user=user).first()
+
             else:
-                student = Student.objects.get(user=user)
-                id = student.student_id
+                student = Student.objects.filter(user=user).first()
 
         except Exception as e:
             print(e)
-            try:
-                User.objects.get(username=username).delete()
-            except Exception as e:
-                return Response({'msg': 'failure',
-                                 'error': 'Invalid username or password'},
-                                status=401)
-
             return Response({'msg': 'failure', 'error': e.__str__()}, status=401)
 
         token = get_jwt(user)
-        return Response({'token': token, 'id': id,
+        if not is_teacher:
+            return Response({'token': token,
+                             'is_teacher': is_teacher,
+                             'student': StudentSerializer(student).data,
+                             'user': UserSerializer(user).data
+                             }, status=200)
+        return Response({'token': token,
                          'is_teacher': is_teacher,
+                         'teacher': TeacherSerializer(teacher).data,
                          'user': UserSerializer(user).data
                          }, status=200)
 
