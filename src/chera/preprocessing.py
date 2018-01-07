@@ -5,7 +5,6 @@ import face_recognition as fc
 import numpy as np
 import cv2
 
-
 def encode(img):
     """
     Given an image it returns the encodings for all the faces in the image
@@ -36,18 +35,42 @@ def generate_dataset(vid):
     with a single face in it.
     """
     encodings = []
+    video_capture = cv2.VideoCapture(vid)
+    frames = []
+    frame_count = 0
+    batch_size = 7
 
-    cap = cv2.VideoCapture(vid)
-    success, frame = cap.read()
+    while video_capture.isOpened():
+        ret, frame = video_capture.read()
 
-    while success:
-        corrected_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        encoding = encode(corrected_frame)
+        if not ret:
+            break
 
-        if len(encoding) == 1:  # Single face
-            encodings.append(encoding)
+        frame = frame[:, :, ::-1]
+        (h, w) = frame.shape[:2]
 
-        success, frame = cap.read()
+        center = (w / 2, h / 2)
+        M = cv2.getRotationMatrix2D(center, 90, 1.0)
+        frame = cv2.warpAffine(frame, M, (w, h))
+
+        frame_count += 1
+        frames.append(frame)
+
+        if len(frames) == batch_size:
+            batch_of_face_locations = fc.\
+                batch_face_locations(frames)
+
+            for frame_number_in_batch, face_locations in \
+                    enumerate(batch_of_face_locations):
+                if len(face_locations) == 1:
+                    top, right, bottom, left = face_locations[0]
+                    image = frames[frame_number_in_batch]
+                    face_image = image[top:bottom, left:right]
+                    enc = fc.face_encodings(face_image,
+                                            face_locations)[0]
+                    if len(enc):
+                        encodings.append(enc)
+            frames = []
 
     if encodings:
         encodings = np.vstack(encodings)
