@@ -117,3 +117,16 @@ class CourseDataCreateView(APIView):
         course_data.save()
 
         return Response({'msg': 'success'})
+
+
+class CourseEnrollmentRetrieveView(APIView):
+    permission_classes = (IsTeacher,)
+
+    def get(self, request):
+        course_id = request.GET['course_id']
+
+        course = Course.objects.get(course_id=course_id)
+
+        enrollment = course.enrollment_complete
+
+        return Response({'enrollment_complete': enrollment})

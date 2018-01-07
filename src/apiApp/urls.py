@@ -14,7 +14,8 @@ from .course.views import (
     CourseCreateAPIView, CourseListAPIView,
     CourseDetailAPIView, CourseUpdateAPIView,
     CourseDeleteAPIView, CourseListByTeacherIdAPIView,
-    CourseListByDeptIdAPIView, CourseDataCreateView
+    CourseListByDeptIdAPIView, CourseDataCreateView,
+    CourseEnrollmentRetrieveView
 )
 from .lecture.views import (
     LectureCreateAPIView, LectureListByCourse,
@@ -64,7 +65,8 @@ urlpatterns = [
     url(r'^course/getByTeacherId/$', CourseListByTeacherIdAPIView.as_view()),
     url(r'^course/getByDeptId/$', CourseListByDeptIdAPIView.as_view()),
 
-    url(r'course/create_data/$', CourseDataCreateView.as_view()),
+    url(r'^course/create_data/$', CourseDataCreateView.as_view()),
+    url(r'^course/checkEnrollment/$', CourseEnrollmentRetrieveView.as_view()),
 
     # lecture
     url(r'^lecture/create/$', LectureCreateAPIView.as_view()),
