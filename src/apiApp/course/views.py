@@ -6,6 +6,8 @@ from rest_framework.generics import (
     DestroyAPIView
 )
 
+from rest_framework.views import APIView
+
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework.permissions import (
     AllowAny,
@@ -13,13 +15,20 @@ from rest_framework.permissions import (
     IsAdminUser,
     IsAuthenticatedOrReadOnly
 )
+from rest_framework.response import Response
+from django.core.files import File
 from ..permissions import IsUserTeacherOfCourse, IsTeacher
 from .serializers import (
     CourseCreateSerializer,
     CourseDetailSerializer
 )
 
-from ..models import Course, Teacher, Department
+from ..models import Course, Teacher, Department, CourseData
+
+import pickle as pkl
+from tempfile import TemporaryFile
+
+from chera import modelling
 
 
 # don't change variable names
@@ -78,3 +87,33 @@ class CourseDeleteAPIView(DestroyAPIView):
     authentication_classes = (JSONWebTokenAuthentication,)
     queryset = Course.objects.all()
     serializer_class = CourseCreateSerializer
+
+
+class CourseDataCreateView(APIView):
+    permission_classes = (IsTeacher, IsUserTeacherOfCourse)
+
+    def post(self, request):
+        course_id = request.POST['course_id']
+
+        course = Course.objects.get(course_id=course_id)
+
+        students = course.students.all()
+
+        # to add exception handling for no training data of students
+        datas = [student.studentdata.data for student in students]
+        ids = [student.student_id for student in students]
+
+        saveable = modelling.train(ids, datas)
+
+        outfile = TemporaryFile()
+        pkl.dump(saveable, outfile)
+
+        f = File(outfile, name='{0}.pkl'.format(course.course_id))
+
+        course.enrollment_complete = True
+        course.save()
+
+        course_data = CourseData(course_id=course, data=f)
+        course_data.save()
+
+        return Response({'msg': 'success'})

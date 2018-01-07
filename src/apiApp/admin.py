@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import (
     Teacher, Student,
     Department, Course,
-    Lecture, StudentData
+    Lecture, StudentData, CourseData
 )
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -30,6 +30,10 @@ class CourseAdminModel(admin.ModelAdmin):
     list_display_links = ["dept_id", "teacher_id"]
 
 
+class CourseDataAdminModel(admin.ModelAdmin):
+    list_display = ['data_id', 'course_id', 'data']
+
+
 class LectureAdminModel(admin.ModelAdmin):
     list_display = ['lect_id', 'course_id', 'lect_no', 'start_time', 'end_time',
                     'comment', 'updated', 'created']
@@ -46,6 +50,7 @@ admin.site.register(Teacher, TeacherAdminModel)
 admin.site.register(Student, StudentAdminModel)
 admin.site.register(Department, DepartmentAdminModel)
 admin.site.register(Course, CourseAdminModel)
+admin.site.register(CourseData, CourseDataAdminModel)
 admin.site.register(Lecture, LectureAdminModel)
 admin.site.register(StudentData, StudentDataAdminModel)
 admin.site.register(User,UserAdminModel)

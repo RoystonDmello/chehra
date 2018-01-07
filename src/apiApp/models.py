@@ -135,6 +135,23 @@ class Course(models.Model):
         return self.name
 
 
+def course_data_location(instance, filename):
+    return "course_models/%s" % (filename)
+
+
+class CourseData(models.Model):
+    data_id = models.AutoField(primary_key=True)
+    course_id = models.OneToOneField('Course', on_delete=models.CASCADE)
+    data = models.FileField(upload_to=course_data_location)
+
+    # for python 2
+    def __unicode__(self):
+        return str(self.data_id)
+
+    # for python 3
+    def __str__(self):
+        return str(self.data_id)
+
 class Lecture(models.Model):
     lect_id = models.AutoField(primary_key=True)
     course_id = models.ForeignKey('Course', on_delete=models.CASCADE)
@@ -157,14 +174,14 @@ class Lecture(models.Model):
 
 
 # for class student images
-def upload_location(instance, filename):
+def training_upload_location(instance, filename):
     return "training_data/%s" % (filename)
 
 
 class StudentData(models.Model):
     data_id = models.AutoField(primary_key=True)
     student_id = models.OneToOneField('Student', on_delete=models.CASCADE)
-    data = models.FileField(upload_to=upload_location)
+    data = models.FileField(upload_to=training_upload_location)
 
     # for python 2
     def __unicode__(self):

@@ -30,7 +30,8 @@ from rest_framework_jwt.settings import api_settings
 
 import json, jsonpickle
 
-from .serializers import StudentDataSerializer, UserSerializer, TeacherSerializer
+from .serializers import StudentDataSerializer, UserSerializer, \
+    TeacherSerializer, StudentSerializer
 from ..models import Teacher, Student, Department, StudentData
 
 
@@ -145,6 +146,7 @@ class Login(APIView):
 
 class StudentDataCreateAPIView(APIView):
     parser_classes = (MultiPartParser,)
+    permission_classes = ()
     temp = 'temp'
 
     def post(self, request):

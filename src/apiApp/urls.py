@@ -13,7 +13,8 @@ from .department.views import (
 from .course.views import (
     CourseCreateAPIView, CourseListAPIView,
     CourseDetailAPIView, CourseUpdateAPIView,
-    CourseDeleteAPIView, CourseListByTeacherIdAPIView, CourseListByDeptIdAPIView
+    CourseDeleteAPIView, CourseListByTeacherIdAPIView,
+    CourseListByDeptIdAPIView, CourseDataCreateView
 )
 from .lecture.views import (
     LectureCreateAPIView, LectureListByCourse,
@@ -62,6 +63,8 @@ urlpatterns = [
 
     url(r'^course/getByTeacherId/$', CourseListByTeacherIdAPIView.as_view()),
     url(r'^course/getByDeptId/$', CourseListByDeptIdAPIView.as_view()),
+
+    url(r'course/create_data/$', CourseDataCreateView.as_view()),
 
     # lecture
     url(r'^lecture/create/$', LectureCreateAPIView.as_view()),
