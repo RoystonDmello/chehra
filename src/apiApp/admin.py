@@ -31,8 +31,8 @@ class CourseAdminModel(admin.ModelAdmin):
 
 
 class LectureAdminModel(admin.ModelAdmin):
-    list_display = ['lect_id', 'course_id', 'lect_no', 'duration', 'comment',
-                    'updated', 'created']
+    list_display = ['lect_id', 'course_id', 'lect_no', 'start_time', 'end_time',
+                    'comment', 'updated', 'created']
 
 
 class StudentDataAdminModel(admin.ModelAdmin):
