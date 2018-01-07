@@ -6,10 +6,12 @@ from ..models import Lecture
 class LectureCreateSerializer(ModelSerializer):
     class Meta:
         model = Lecture
-        fields = ['lect_id', 'course_id', 'lect_no', 'duration', 'comment', 'updated', 'created']
+        fields = ['lect_id', 'course_id', 'lect_no', 'start_time', 'end_time',
+                  'comment', 'updated', 'created']
 
 
 class LectureListSerializer(ModelSerializer):
     class Meta:
         model = Lecture
-        fields = ['lect_id', 'course_id', 'lect_no', 'duration', 'comment', 'updated', 'created']
+        fields = ['lect_id', 'course_id', 'lect_no', 'start_time', 'end_time',
+                  'comment', 'updated', 'created']
