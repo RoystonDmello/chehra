@@ -31,6 +31,6 @@ class IsCourseEnrollmentComplete(BasePermission):
     message = "The course has not completed enrollment"
 
     def has_permission(self, request, view):
-        course = Course.objects.filter(course_id=request.course_id)
+        course = Course.objects.filter(course_id=request.POST['course_id']).first()
 
         return course.enrollment_complete

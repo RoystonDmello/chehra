@@ -18,11 +18,11 @@ from ..models import Lecture
 
 
 class LectureCreateAPIView(CreateAPIView):
-    queryset = Lecture.objects.all()
-    serializer_class = LectureCreateSerializer
     permission_classes = [IsAuthenticated, IsTeacher,
                           IsCourseEnrollmentComplete]
     authentication_classes = (JSONWebTokenAuthentication,)
+    queryset = Lecture.objects.all()
+    serializer_class = LectureCreateSerializer
 
 
 class LectureListByCourse(ListAPIView):

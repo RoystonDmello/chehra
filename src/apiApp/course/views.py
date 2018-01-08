@@ -91,6 +91,7 @@ class CourseDeleteAPIView(DestroyAPIView):
 
 class CourseDataCreateView(APIView):
     permission_classes = (IsTeacher, IsUserTeacherOfCourse)
+    authentication_classes = (JSONWebTokenAuthentication,)
 
     def post(self, request):
         course_id = request.POST['course_id']
@@ -100,21 +101,24 @@ class CourseDataCreateView(APIView):
         students = course.students.all()
 
         # to add exception handling for no training data of students
-        datas = [student.studentdata.data for student in students]
-        ids = [student.student_id for student in students]
+        try:
+            datas = [student.studentdata.data for student in students]
+            ids = [student.student_id for student in students]
 
-        saveable = modelling.train(ids, datas)
+            saveable = modelling.train(ids, datas)
 
-        outfile = TemporaryFile()
-        pkl.dump(saveable, outfile)
+            outfile = TemporaryFile()
+            pkl.dump(saveable, outfile)
 
-        f = File(outfile, name='{0}.pkl'.format(course.course_id))
+            f = File(outfile, name='{0}.pkl'.format(course.course_id))
+
+            course_data = CourseData(course_id=course, data=f)
+            course_data.save()
+        except Exception as e:
+            print(e)
 
         course.enrollment_complete = True
         course.save()
-
-        course_data = CourseData(course_id=course, data=f)
-        course_data.save()
 
         return Response({'msg': 'success'})
 
