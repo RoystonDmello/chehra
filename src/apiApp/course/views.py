@@ -121,6 +121,7 @@ class CourseDataCreateView(APIView):
 
 class CourseEnrollmentRetrieveView(APIView):
     permission_classes = (IsTeacher,)
+    authentication_classes = (JSONWebTokenAuthentication,)
 
     def get(self, request):
         course_id = request.GET['course_id']
