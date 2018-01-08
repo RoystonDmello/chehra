@@ -14,7 +14,7 @@ def encode(img):
     detected in the image
     """
 
-    face_locations = fc.face_locations(img)
+    face_locations = fc.face_locations(img, model="cnn")
 
     if face_locations:
         encodings = fc.face_encodings(img, face_locations)
