@@ -19,7 +19,8 @@ from .course.views import (
 )
 from .lecture.views import (
     LectureCreateAPIView, LectureListByCourse,
-    LectureUpdateAPIView
+    LectureUpdateAPIView, LectureAttendanceTakenView,
+    LectureTakeAttendanceView
 )
 from .course_student.views import (
     EnrollInCourse, GetEnrolledStudentsByCourseIdListAPIView,
@@ -67,6 +68,8 @@ urlpatterns = [
 
     url(r'^course/create_data/$', CourseDataCreateView.as_view()),
     url(r'^course/checkEnrollment/$', CourseEnrollmentRetrieveView.as_view()),
+    url(r'^lecture/checkAttendance/$', LectureAttendanceTakenView.as_view()),
+    url(r'^lecture/takeAttendance/$', LectureTakeAttendanceView.as_view()),
 
     # lecture
     url(r'^lecture/create/$', LectureCreateAPIView.as_view()),

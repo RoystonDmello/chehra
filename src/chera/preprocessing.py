@@ -5,6 +5,7 @@ import face_recognition as fc
 import numpy as np
 import cv2
 
+
 def encode(img):
     """
     Given an image it returns the encodings for all the faces in the image
@@ -27,7 +28,7 @@ def encode(img):
 
 def generate_dataset(vid):
     """
-    GIven a video file path it finds the encodings of all the frames with a
+    Given a video file path it finds the encodings of all the frames with a
     single face in the every frame. It returns a concatenated array which will
     be the training data set
     :param vid: String, full file path of the video
@@ -50,8 +51,8 @@ def generate_dataset(vid):
         (h, w) = frame.shape[:2]
 
         center = (w / 2, h / 2)
-        M = cv2.getRotationMatrix2D(center, 90, 1.0)
-        frame = cv2.warpAffine(frame, M, (w, h))
+        m = cv2.getRotationMatrix2D(center, 90, 1.0)
+        frame = cv2.warpAffine(frame, m, (w, h))
 
         frame_count += 1
         frames.append(frame)

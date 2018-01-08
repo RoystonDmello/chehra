@@ -154,4 +154,3 @@ AUTH_USER_MODEL = 'apiApp.User'
 JWT_AUTH = {
     'JWT_VERIFY_EXPIRATION': False,
 }
-

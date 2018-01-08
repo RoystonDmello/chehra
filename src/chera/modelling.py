@@ -6,6 +6,8 @@ from functools import reduce
 import numpy as np
 from sklearn.svm import SVC
 
+from .preprocessing import encode
+
 
 def train(student_ids, student_datas):
     """
@@ -31,3 +33,27 @@ def train(student_ids, student_datas):
     clf = SVC(C=0.0001).fit(data_set, labels)
 
     return (clf, student_ids)
+
+
+def predict(model, mappings, imgs):
+    """
+    Given the model, mappings and images of the classroom it returns list of
+    student ids of those recognised and present
+    :param model: Sklearn clf, classifier model for the course
+    :param mappings: List, mappings for the course model predictions and the
+    student ids
+    :param imgs: imgs of the classroom
+    :return: list, list of student_ids found present
+    """
+    final_preds = []
+
+    for img in imgs:
+        data = encode(img)
+        preds = model.predict(data)
+        final_preds = final_preds + preds
+
+    final_preds = set(final_preds)
+
+    student_ids = [mappings[i] for i in final_preds]
+
+    return student_ids

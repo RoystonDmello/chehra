@@ -162,6 +162,7 @@ class Lecture(models.Model):
     comment = models.CharField(max_length=50, blank=True)    # optional
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
+    classroom = models.ForeignKey('Classroom', on_delete=models.CASCADE, null=False)
     isAttendanceTaken = models.BooleanField(default=False)
 
     students = models.ManyToManyField(Student)
@@ -192,3 +193,30 @@ class StudentData(models.Model):
     # for python 3
     def __str__(self):
         return str(self.data_id)
+
+
+class Classroom(models.Model):
+    classroom_id = models.AutoField(primary_key=True)
+    classroom_name = models.CharField(max_length=50, null=False)
+
+    # for python 2
+    def __unicode__(self):
+        return str(self.classroom_id)
+
+    # for python 3
+    def __str__(self):
+        return str(self.classroom_id)
+
+
+class Camera(models.Model):
+    camera_id = models.AutoField(primary_key=True)
+    camera_url = models.CharField(max_length=23, null=False)
+    classroom = models.ForeignKey('Classroom', on_delete=models.CASCADE)
+
+    # for python 2
+    def __unicode__(self):
+        return str(self.camera_id)
+
+    # for python 3
+    def __str__(self):
+        return str(self.camera_id)

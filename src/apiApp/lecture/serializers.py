@@ -8,14 +8,15 @@ class LectureCreateSerializer(ModelSerializer):
     class Meta:
         model = Lecture
         fields = ['lect_id', 'course_id', 'lect_no', 'start_time', 'end_time',
-                  'comment', 'updated', 'created']
+                  'comment', 'updated', 'created', 'classroom']
 
 
 class LectureListSerializer(ModelSerializer):
     class Meta:
         model = Lecture
         fields = ['lect_id', 'course_id', 'lect_no', 'start_time', 'end_time',
-                  'isAttendanceTaken', 'comment', 'updated', 'created']
+                  'isAttendanceTaken', 'comment', 'updated', 'created',
+                  'classroom']
 
 
 class CalendarDatesSerializer(serializers.Serializer):
