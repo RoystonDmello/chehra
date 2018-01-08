@@ -152,6 +152,7 @@ class CourseData(models.Model):
     def __str__(self):
         return str(self.data_id)
 
+
 class Lecture(models.Model):
     lect_id = models.AutoField(primary_key=True)
     course_id = models.ForeignKey('Course', on_delete=models.CASCADE)
@@ -161,6 +162,7 @@ class Lecture(models.Model):
     comment = models.CharField(max_length=50, blank=True)    # optional
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
+    isAttendanceTaken = models.BooleanField(default=False)
 
     students = models.ManyToManyField(Student)
 
