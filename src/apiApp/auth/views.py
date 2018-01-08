@@ -161,12 +161,10 @@ class StudentDataCreateAPIView(APIView):
         outfile = TemporaryFile()
         np.save(outfile, dataset)
 
-        username = request.data['username']
+        id = request.data['student_id']
 
-        user = User.objects.filter(username=username).first()
-        student = user.student
-
-        f = File(outfile, '{0}.npy'.format(username))
+        student = Student.objects.filter(student_id=id).first()
+        f = File(outfile, '{0}.npy'.format(student))
 
         instance = StudentData(student_id=student, data=f)
         instance.save()
