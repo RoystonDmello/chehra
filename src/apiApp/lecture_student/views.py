@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 from ..views import markAttendance, isStudentEnrolledInCourse
 from ..models import Lecture, Student
 from ..auth.serializers import StudentSerializer
-from ..lecture.serializers import LectureListSerializer
+from ..lecture.serializers import LectureListSerializer,CalendarDatesSerializer
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from ..permissions import IsTeacher
 from rest_framework.permissions import (
@@ -70,3 +70,24 @@ class LectureByStudentIdListAPIView(ListAPIView):
         student_id = self.request.GET['student_id']
         course_id = self.request.GET['course_id']
         return Lecture.objects.filter(students=student_id, course_id=course_id)
+
+
+class IsPresentForLectureDatesByCourseAPIView(ListAPIView):
+
+    serializer_class = CalendarDatesSerializer
+    authentication_classes = (JSONWebTokenAuthentication,)
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self, *args, **kwargs):
+        student_id = self.request.GET['student_id']
+        course_id = self.request.GET['course_id']
+        all_lectures=Lecture.objects.filter(course_id=course_id)
+        serialized_lecture_data=CalendarDatesSerializer(all_lectures,many=True)
+
+        for lecture in serialized_lecture_data.data:
+            #print(lecture['lect_id'])
+            if(all_lectures.filter(lect_id=lecture['lect_id'],students=student_id).exists()):
+                lecture['is_present']=True
+
+        return serialized_lecture_data.data
+

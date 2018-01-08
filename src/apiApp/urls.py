@@ -27,7 +27,7 @@ from .course_student.views import (
 )
 from .lecture_student.views import (
     MarkAttendanceAPIView,StudentListByLectureIdListAPIView,
-    LectureByStudentIdListAPIView
+    LectureByStudentIdListAPIView,IsPresentForLectureDatesByCourseAPIView
 )
 
 urlpatterns = [
@@ -86,7 +86,9 @@ urlpatterns = [
     # lecture-student
     url(r'^lecture/markAttendance/$', MarkAttendanceAPIView.as_view()),
     url(r'^lecture/getPresentStudents/$', StudentListByLectureIdListAPIView.as_view()),
-    url(r'^lecture/getLecturesByStudentId', LectureByStudentIdListAPIView.as_view())
+    url(r'^lecture/getLecturesByStudentId', LectureByStudentIdListAPIView.as_view()),
+
+    url(r'^calendar/getIsPresentForLectureDatesByCourse', IsPresentForLectureDatesByCourseAPIView.as_view())
 
 
 ]
