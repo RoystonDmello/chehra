@@ -31,6 +31,12 @@ from .lecture_student.views import (
     LectureByStudentIdListAPIView,IsPresentForLectureDatesByCourseAPIView
 )
 
+from push_notifications.api.rest_framework import GCMDeviceViewSet
+
+token_create_view = GCMDeviceViewSet.as_view({
+    'post': 'create'
+})
+
 urlpatterns = [
     url(r'^$', index),
 
@@ -91,7 +97,9 @@ urlpatterns = [
     url(r'^lecture/getPresentStudents/$', StudentListByLectureIdListAPIView.as_view()),
     url(r'^lecture/getLecturesByStudentId', LectureByStudentIdListAPIView.as_view()),
 
-    url(r'^calendar/getIsPresentForLectureDatesByCourse', IsPresentForLectureDatesByCourseAPIView.as_view())
+    url(r'^calendar/getIsPresentForLectureDatesByCourse', IsPresentForLectureDatesByCourseAPIView.as_view()),
+
+    url(r'^token/create/$', token_create_view)
 
 
 ]

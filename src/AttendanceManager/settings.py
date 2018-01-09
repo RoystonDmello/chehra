@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
     # third party
     'rest_framework',
+    'push_notifications'
 ]
 
 MIDDLEWARE = [
@@ -153,4 +154,9 @@ AUTH_USER_MODEL = 'apiApp.User'
 
 JWT_AUTH = {
     'JWT_VERIFY_EXPIRATION': False,
+}
+
+PUSH_NOTIFICATION_SETTINGS = {
+    "FCM_API_KEY": "",
+    "UPDATE_ON_DUPLICATE_REG_ID": True
 }

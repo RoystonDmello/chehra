@@ -82,6 +82,10 @@ class LectureTakeAttendanceView(APIView):
 
         student_ids = modelling.predict(model, mappings, imgs)
 
-        sendable = {'present_student_ids': student_ids}
+        attendances = [{'student_id': student_id,
+                        'attended': student_id in student_ids}
+                       for student_id in mappings]
+
+        sendable = {'attendances': attendances}
 
         return Response(sendable)
