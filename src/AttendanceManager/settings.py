@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
     # third party
     'rest_framework',
+    'django_celery_results'
 ]
 
 MIDDLEWARE = [
@@ -138,14 +139,14 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "media_cdn")
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        # 'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-    )
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ),
+    # 'DEFAULT_AUTHENTICATION_CLASSES': (
+    #     # 'rest_framework.authentication.TokenAuthentication',
+    #     'rest_framework.authentication.SessionAuthentication',
+    #     # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    # )
 
 }
 
@@ -154,3 +155,11 @@ AUTH_USER_MODEL = 'apiApp.User'
 JWT_AUTH = {
     'JWT_VERIFY_EXPIRATION': False,
 }
+
+# CELERY settings
+
+CELERY_BROKER_URL = 'amqp://guest:guest@localhost//'
+
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_TASK_SERIALIZER = 'json'

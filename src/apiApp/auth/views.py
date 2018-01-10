@@ -3,15 +3,12 @@ from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+
 from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile, File
+from django.core.files.base import ContentFile
+
 from ..custom_user_backend import UserBackend
 from django.contrib.auth import get_user_model
-
-from tempfile import TemporaryFile
-import numpy as np
-
-from chera import preprocessing
 
 from rest_framework.generics import (
     ListAPIView,
@@ -27,6 +24,8 @@ from rest_framework.permissions import (
     IsAuthenticatedOrReadOnly
 )
 from rest_framework_jwt.settings import api_settings
+
+from ..tasks import video_process
 
 import json, jsonpickle
 
@@ -147,31 +146,15 @@ class Login(APIView):
 class StudentDataCreateAPIView(APIView):
     parser_classes = (MultiPartParser,)
     permission_classes = ()
-    temp = 'temp'
 
     def post(self, request):
         video = request.data['video']
-        path = default_storage.save(self.temp, ContentFile(video.read()))
+        temp = 'temp'
+
+        path = default_storage.save(temp, ContentFile(video.read()))
         full_path = default_storage.path(path)
 
-        dataset = preprocessing.generate_dataset(full_path)
-
-        if not len(dataset):
-            return Response({'msg': 'failure',
-                             'error': 'No face found in the video'}, status=401)
-
-        outfile = TemporaryFile()
-        np.save(outfile, dataset)
-
-        id = request.data['student_id']
-
-        student = Student.objects.filter(student_id=id).first()
-        f = File(outfile, '{0}.npy'.format(student))
-
-        instance = StudentData(student_id=student, data=f)
-        instance.save()
-
-        default_storage.delete(path)
+        video_process.delay(full_path, request.POST['student_id'])
 
         return Response({'msg': 'success'})
 

@@ -58,8 +58,7 @@ def generate_dataset(vid):
         frames.append(frame)
 
         if len(frames) == batch_size:
-            batch_of_face_locations = fc.\
-                batch_face_locations(frames)
+            batch_of_face_locations = fc.batch_face_locations(frames)
 
             for frame_number_in_batch, face_locations in \
                     enumerate(batch_of_face_locations):
