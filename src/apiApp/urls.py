@@ -30,6 +30,7 @@ from .lecture_student.views import (
     MarkAttendanceAPIView,StudentListByLectureIdListAPIView,
     LectureByStudentIdListAPIView,IsPresentForLectureDatesByCourseAPIView
 )
+from .classroom.views import ClassroomListAPIView
 
 urlpatterns = [
     url(r'^$', index),
@@ -89,9 +90,11 @@ urlpatterns = [
     # lecture-student
     url(r'^lecture/markAttendance/$', MarkAttendanceAPIView.as_view()),
     url(r'^lecture/getPresentStudents/$', StudentListByLectureIdListAPIView.as_view()),
-    url(r'^lecture/getLecturesByStudentId', LectureByStudentIdListAPIView.as_view()),
+    url(r'^lecture/getLecturesByStudentId/$', LectureByStudentIdListAPIView.as_view()),
 
-    url(r'^calendar/getIsPresentForLectureDatesByCourse', IsPresentForLectureDatesByCourseAPIView.as_view())
+    url(r'^calendar/getIsPresentForLectureDatesByCourse/$', IsPresentForLectureDatesByCourseAPIView.as_view()),
 
+    # classroom
+    url(r'^classroom/get/$', ClassroomListAPIView.as_view()),
 
 ]
