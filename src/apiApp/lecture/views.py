@@ -88,4 +88,6 @@ class LectureTakeAttendanceView(APIView):
 
         sendable = {'attendances': attendances}
 
+        absent_student_ids = list(set(mappings).difference(set(student_ids)))
+
         return Response(sendable)
