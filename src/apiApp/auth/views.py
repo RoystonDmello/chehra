@@ -132,8 +132,14 @@ class Login(APIView):
 
         token = get_jwt(user)
         if not is_teacher:
+            count = StudentData.objects.filter(student_id=student.student_id).count()
+            if count == 0:
+                is_video_added = False
+            else:
+                is_video_added = True
             return Response({'token': token,
                              'is_teacher': is_teacher,
+                             'is_video_added': is_video_added,
                              'student': StudentSerializer(student).data,
                              'user': UserSerializer(user).data
                              }, status=200)
