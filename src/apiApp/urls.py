@@ -24,7 +24,8 @@ from .lecture.views import (
 )
 from .course_student.views import (
     EnrollInCourse, GetEnrolledStudentsByCourseIdListAPIView,
-    GetEnrolledCoursesByStudentIdListAPIView
+    GetEnrolledCoursesByStudentIdListAPIView,
+    GetAvailableCoursesByStudentIdListAPIView,
 )
 from .lecture_student.views import (
     MarkAttendanceAPIView,StudentListByLectureIdListAPIView,
@@ -85,6 +86,7 @@ urlpatterns = [
     url(r'^course/enrollStudentInCourse/$', EnrollInCourse.as_view()),   # course_id, student_id
     url(r'^course/getEnrolledStudents/$', GetEnrolledStudentsByCourseIdListAPIView.as_view()),
     url(r'^course/getEnrolledCourses/$', GetEnrolledCoursesByStudentIdListAPIView.as_view()),
+    url(r'^course/getAvailableCourses/$', GetAvailableCoursesByStudentIdListAPIView.as_view()),
 
 
     # lecture-student

@@ -79,3 +79,22 @@ class GetEnrolledCoursesByStudentIdListAPIView(ListAPIView):
         student_id = self.request.GET['student_id']
         return Course.objects.filter(students=student_id)
 
+
+class GetAvailableCoursesByStudentIdListAPIView(ListAPIView):
+    serializer_class = CourseDetailSerializer
+    permission_classes = (IsAuthenticated, IsStudent)
+    authentication_classes = (JSONWebTokenAuthentication,)
+
+    def get_queryset(self, *args, **kwargs):
+        student_id = self.request.GET['student_id']
+
+        dept_id = self.request.GET['dept_id']
+        year = self.request.GET['year']
+        academic_yr = self.request.GET['academic_yr']
+
+        all_courses = Course.objects.filter(dept_id=dept_id, year=year, academic_yr=academic_yr)
+        enrolled_courses = Course.objects.filter(students=student_id)
+
+        return all_courses.difference(enrolled_courses)
+
+
