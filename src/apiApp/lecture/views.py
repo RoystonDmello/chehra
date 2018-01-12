@@ -1,28 +1,25 @@
+import pickle as pkl
+
+from chera import modelling
+from node_image import image_retrieval as ir
+from push_notifications.models import GCMDevice
 from rest_framework.generics import (
     ListAPIView,
     CreateAPIView,
-    RetrieveAPIView,
     UpdateAPIView,
-    DestroyAPIView,
 )
 from rest_framework.permissions import (
-    AllowAny,
-    IsAuthenticated,
-    IsAdminUser,
-    IsAuthenticatedOrReadOnly
+    IsAuthenticated
 )
-from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+
 from .serializers import LectureCreateSerializer, LectureListSerializer
+from ..models import Lecture, Student
 from ..permissions import IsTeacher, IsCourseEnrollmentComplete, \
     IsUserTeacherOfCourse
-from ..models import Lecture
 
-from node_image import image_retrieval as ir
-from chera import modelling
-
-import pickle as pkl
 
 class LectureCreateAPIView(CreateAPIView):
     permission_classes = [IsAuthenticated, IsTeacher,
@@ -65,7 +62,7 @@ class LectureAttendanceTakenView(APIView):
 
 class LectureTakeAttendanceView(APIView):
     authentication_classes = (JSONWebTokenAuthentication,)
-    permission_classes = (IsTeacher, IsCourseEnrollmentComplete)
+    permission_classes = (IsTeacher, IsUserTeacherOfCourse)
 
     def get(self, request):
         lecture_id = request.GET['lect_id']
@@ -82,6 +79,33 @@ class LectureTakeAttendanceView(APIView):
 
         student_ids = modelling.predict(model, mappings, imgs)
 
-        sendable = {'present_student_ids': student_ids}
+        attendances = [{'student_id': student_id,
+                        'attended': student_id in student_ids}
+                       for student_id in mappings]
+
+        sendable = {'attendances': attendances}
+
+        absent_student_ids = list(set(mappings).difference(set(student_ids)))
+
+        present_students = Student.objects.filter(
+            student_id__in=student_ids).all()
+        absent_students = Student.objects.filter(
+            student_id__in=absent_student_ids).all()
+
+        present_students = [st.user for st in present_students]
+        absent_students = [st.user for st in absent_students]
+
+        present_devices = GCMDevice.objects.filter(
+            user__in=present_students)
+        present_devices.send_message("You have been marked {0}"
+                                     " for the lecture of {1} on {2}".format(
+            'present', course.name, lecture.start_time))
+
+        absent_devices = GCMDevice.objects.filter(
+            user__in=absent_students).all()
+
+        absent_devices.send_message("You have been marked {0}"
+                                     " for the lecture of {1} on {2}".format(
+            'absent', course.name, lecture.start_time))
 
         return Response(sendable)

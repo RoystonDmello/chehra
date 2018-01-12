@@ -31,6 +31,12 @@ from .lecture_student.views import (
     LectureByStudentIdListAPIView,IsPresentForLectureDatesByCourseAPIView
 )
 
+from .auth.views import GCDAuthViewSet
+
+token_create_view = GCDAuthViewSet.as_view({
+    'post': 'create'
+})
+
 urlpatterns = [
     url(r'^$', index),
 
@@ -91,7 +97,9 @@ urlpatterns = [
     url(r'^lecture/getPresentStudents/$', StudentListByLectureIdListAPIView.as_view()),
     url(r'^lecture/getLecturesByStudentId', LectureByStudentIdListAPIView.as_view()),
 
-    url(r'^calendar/getIsPresentForLectureDatesByCourse', IsPresentForLectureDatesByCourseAPIView.as_view())
+    url(r'^calendar/getIsPresentForLectureDatesByCourse', IsPresentForLectureDatesByCourseAPIView.as_view()),
+
+    url(r'^token/create/$', token_create_view)
 
 
 ]

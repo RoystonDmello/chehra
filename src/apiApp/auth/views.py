@@ -25,6 +25,10 @@ from rest_framework.permissions import (
 )
 from rest_framework_jwt.settings import api_settings
 
+from push_notifications.api.rest_framework import GCMDeviceViewSet
+
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+
 from ..tasks import video_process
 
 import json, jsonpickle
@@ -175,6 +179,10 @@ class StudentDataGetListAPIView(ListAPIView):
 class StudentDataDeleteAPIView(DestroyAPIView):
     serializer_class = StudentDataSerializer
     queryset = StudentData.objects.all()
+
+class GCDAuthViewSet(GCMDeviceViewSet):
+    authentication_classes = (JSONWebTokenAuthentication,)
+
 
 
 '''

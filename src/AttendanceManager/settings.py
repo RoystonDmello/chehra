@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
     # third party
     'rest_framework',
+    'push_notifications',
     'django_celery_results'
 ]
 
@@ -139,14 +140,14 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "media_cdn")
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
-    # 'DEFAULT_PERMISSION_CLASSES': (
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ),
-    # 'DEFAULT_AUTHENTICATION_CLASSES': (
-    #     # 'rest_framework.authentication.TokenAuthentication',
-    #     'rest_framework.authentication.SessionAuthentication',
-    #     # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-    # )
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        # 'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    )
 
 }
 
@@ -163,3 +164,9 @@ CELERY_BROKER_URL = 'amqp://guest:guest@localhost//'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_TASK_SERIALIZER = 'json'
+
+PUSH_NOTIFICATIONS_SETTINGS = {
+    "FCM_API_KEY": 'AAAAgRzOgYc:APA91bHWl8Whg3ZbLsTax9LcWdUW1VNFqaGMkNDXXUe2xuFzErob5kYgXQ0yBXAJGheBk-J8NpNSeMEC1lb4-63vHjWjDw_KhVi3qlBlQzHgnTF3_LHj43VtZh9SC5zP1RcjYjK0WFu5',
+    "FCM_ERROR_TIMEOUT": 3000,
+    "UPDATE_ON_DUPLICATE_REG_ID": True
+}
