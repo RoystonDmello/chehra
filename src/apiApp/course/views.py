@@ -59,7 +59,9 @@ class CourseListByDeptIdAPIView(ListAPIView):
 
     def get_queryset(self, *args, **kwargs):
         department = Department.objects.filter(dept_id=self.request.GET['dept_id']).first()
-        queryset = Course.objects.filter(dept_id=department)
+        year = self.request.GET['year']
+        academic_yr = self.request.GET['academic_yr']
+        queryset = Course.objects.filter(dept_id=department, year=year, academic_yr=academic_yr)
         return queryset
 
 

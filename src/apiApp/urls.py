@@ -24,12 +24,14 @@ from .lecture.views import (
 )
 from .course_student.views import (
     EnrollInCourse, GetEnrolledStudentsByCourseIdListAPIView,
-    GetEnrolledCoursesByStudentIdListAPIView
+    GetEnrolledCoursesByStudentIdListAPIView,
+    GetAvailableCoursesByStudentIdListAPIView,
 )
 from .lecture_student.views import (
     MarkAttendanceAPIView,StudentListByLectureIdListAPIView,
     LectureByStudentIdListAPIView,IsPresentForLectureDatesByCourseAPIView
 )
+from .classroom.views import ClassroomListAPIView
 
 from .auth.views import GCDAuthViewSet
 
@@ -90,16 +92,19 @@ urlpatterns = [
     url(r'^course/enrollStudentInCourse/$', EnrollInCourse.as_view()),   # course_id, student_id
     url(r'^course/getEnrolledStudents/$', GetEnrolledStudentsByCourseIdListAPIView.as_view()),
     url(r'^course/getEnrolledCourses/$', GetEnrolledCoursesByStudentIdListAPIView.as_view()),
+    url(r'^course/getAvailableCourses/$', GetAvailableCoursesByStudentIdListAPIView.as_view()),
 
 
     # lecture-student
     url(r'^lecture/markAttendance/$', MarkAttendanceAPIView.as_view()),
     url(r'^lecture/getPresentStudents/$', StudentListByLectureIdListAPIView.as_view()),
     url(r'^lecture/getLecturesByStudentId', LectureByStudentIdListAPIView.as_view()),
-
-    url(r'^calendar/getIsPresentForLectureDatesByCourse', IsPresentForLectureDatesByCourseAPIView.as_view()),
+    url(r'^lecture/getLecturesByStudentId/$', LectureByStudentIdListAPIView.as_view()),
 
     url(r'^token/create/$', token_create_view)
+    url(r'^calendar/getIsPresentForLectureDatesByCourse/$', IsPresentForLectureDatesByCourseAPIView.as_view()),
 
+    # classroom
+    url(r'^classroom/get/$', ClassroomListAPIView.as_view()),
 
 ]
