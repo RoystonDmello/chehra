@@ -95,6 +95,9 @@ class CourseDataCreateView(APIView):
 
     def post(self, request):
         course_id = request.POST['course_id']
+        # Everything after this should be async. The faculty doesn;t need to
+        # know that something apart from completing course enrollment
+        # is happening here
 
         course = Course.objects.get(course_id=course_id)
 

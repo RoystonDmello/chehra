@@ -31,9 +31,9 @@ from .lecture_student.views import (
     LectureByStudentIdListAPIView,IsPresentForLectureDatesByCourseAPIView
 )
 
-from push_notifications.api.rest_framework import GCMDeviceViewSet
+from .auth.views import GCDAuthViewSet
 
-token_create_view = GCMDeviceViewSet.as_view({
+token_create_view = GCDAuthViewSet.as_view({
     'post': 'create'
 })
 

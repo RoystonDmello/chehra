@@ -28,6 +28,10 @@ from rest_framework.permissions import (
 )
 from rest_framework_jwt.settings import api_settings
 
+from push_notifications.api.rest_framework import GCMDeviceViewSet
+
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+
 import json, jsonpickle
 
 from .serializers import StudentDataSerializer, UserSerializer, \
@@ -157,6 +161,7 @@ class StudentDataCreateAPIView(APIView):
         dataset = preprocessing.generate_dataset(full_path)
 
         if not len(dataset):
+            # To be converted to notification for async
             return Response({'msg': 'failure',
                              'error': 'No face found in the video'}, status=401)
 
@@ -192,6 +197,10 @@ class StudentDataGetListAPIView(ListAPIView):
 class StudentDataDeleteAPIView(DestroyAPIView):
     serializer_class = StudentDataSerializer
     queryset = StudentData.objects.all()
+
+class GCDAuthViewSet(GCMDeviceViewSet):
+    authentication_classes = (JSONWebTokenAuthentication,)
+
 
 
 '''

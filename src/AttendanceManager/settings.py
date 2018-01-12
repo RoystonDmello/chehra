@@ -25,7 +25,7 @@ SECRET_KEY = 'c8j)neztzn*jzk$lt9a2irciz%6c85jl^fm!1axxjypc_*)zj7'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.31.119', '127.0.0.1', '192.168.0.102', '192.168.1.36']
+ALLOWED_HOSTS = ['192.168.31.119', '127.0.0.1', '192.168.0.102', '192.168.1.36', 'e4e448dc.ngrok.io']
 
 
 # Application definition
@@ -156,7 +156,8 @@ JWT_AUTH = {
     'JWT_VERIFY_EXPIRATION': False,
 }
 
-PUSH_NOTIFICATION_SETTINGS = {
-    "FCM_API_KEY": "",
+PUSH_NOTIFICATIONS_SETTINGS = {
+    "FCM_API_KEY": 'AAAAgRzOgYc:APA91bHWl8Whg3ZbLsTax9LcWdUW1VNFqaGMkNDXXUe2xuFzErob5kYgXQ0yBXAJGheBk-J8NpNSeMEC1lb4-63vHjWjDw_KhVi3qlBlQzHgnTF3_LHj43VtZh9SC5zP1RcjYjK0WFu5',
+    "FCM_ERROR_TIMEOUT": 3000,
     "UPDATE_ON_DUPLICATE_REG_ID": True
 }
