@@ -16,20 +16,15 @@ from rest_framework.permissions import (
     IsAuthenticatedOrReadOnly
 )
 from rest_framework.response import Response
-from django.core.files import File
 from ..permissions import IsUserTeacherOfCourse, IsTeacher
 from .serializers import (
     CourseCreateSerializer,
     CourseDetailSerializer
 )
 
-from ..models import Course, Teacher, Department, CourseData
+from ..models import Course, Teacher, Department
 
-import pickle as pkl
-from tempfile import TemporaryFile
-
-from chera import modelling
-
+from ..tasks import course_process
 
 # don't change variable names
 class CourseCreateAPIView(CreateAPIView):
@@ -95,33 +90,8 @@ class CourseDataCreateView(APIView):
 
     def post(self, request):
         course_id = request.POST['course_id']
-        # Everything after this should be async. The faculty doesn;t need to
-        # know that something apart from completing course enrollment
-        # is happening here
 
-        course = Course.objects.get(course_id=course_id)
-
-        students = course.students.all()
-
-        # to add exception handling for no training data of students
-        try:
-            datas = [student.studentdata.data for student in students]
-            ids = [student.student_id for student in students]
-
-            saveable = modelling.train(ids, datas)
-
-            outfile = TemporaryFile()
-            pkl.dump(saveable, outfile)
-
-            f = File(outfile, name='{0}.pkl'.format(course.course_id))
-
-            course_data = CourseData(course_id=course, data=f)
-            course_data.save()
-        except Exception as e:
-            print(e)
-
-        course.enrollment_complete = True
-        course.save()
+        course_process.delay(course_id)
 
         return Response({'msg': 'success'})
 

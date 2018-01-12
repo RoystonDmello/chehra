@@ -160,7 +160,7 @@ class StudentDataCreateAPIView(APIView):
 
         video_process.delay(full_path, request.POST['student_id'])
 
-        return Response({'msg': 'success'})
+        return Response({'success': True, 'msg': 'Video Uploaded. It will be processed and validated shortly.'})
 
 
 class StudentDataUpdateAPIView(UpdateAPIView):
