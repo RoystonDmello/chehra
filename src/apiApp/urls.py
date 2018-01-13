@@ -15,7 +15,7 @@ from .course.views import (
     CourseDetailAPIView, CourseUpdateAPIView,
     CourseDeleteAPIView, CourseListByTeacherIdAPIView,
     CourseListByDeptIdAPIView, CourseDataCreateView,
-    CourseEnrollmentRetrieveView
+    CourseEnrollmentRetrieveView, CourseReportDownloadView
 )
 from .lecture.views import (
     LectureCreateAPIView, LectureListByCourse,
@@ -34,6 +34,9 @@ from .lecture_student.views import (
 from .classroom.views import ClassroomListAPIView
 
 from .auth.views import GCDAuthViewSet
+
+from django.conf import settings
+from django.conf.urls.static import static
 
 token_create_view = GCDAuthViewSet.as_view({
     'post': 'create'
@@ -93,6 +96,7 @@ urlpatterns = [
     url(r'^course/getEnrolledStudents/$', GetEnrolledStudentsByCourseIdListAPIView.as_view()),
     url(r'^course/getEnrolledCourses/$', GetEnrolledCoursesByStudentIdListAPIView.as_view()),
     url(r'^course/getAvailableCourses/$', GetAvailableCoursesByStudentIdListAPIView.as_view()),
+    url(r'^course/getReportUrl/$', CourseReportDownloadView.as_view()),
 
 
     # lecture-student
@@ -101,7 +105,7 @@ urlpatterns = [
     url(r'^lecture/getLecturesByStudentId', LectureByStudentIdListAPIView.as_view()),
     url(r'^lecture/getLecturesByStudentId/$', LectureByStudentIdListAPIView.as_view()),
 
-    url(r'^token/create/$', token_create_view)
+    url(r'^token/create/$', token_create_view),
     url(r'^calendar/getIsPresentForLectureDatesByCourse/$', IsPresentForLectureDatesByCourseAPIView.as_view()),
 
     # classroom

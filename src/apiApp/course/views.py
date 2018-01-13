@@ -24,7 +24,10 @@ from .serializers import (
 
 from ..models import Course, Teacher, Department
 
+from django.core.files.storage import default_storage
+
 from ..tasks import course_process
+from ..report import generate
 
 # don't change variable names
 class CourseCreateAPIView(CreateAPIView):
@@ -110,3 +113,22 @@ class CourseEnrollmentRetrieveView(APIView):
         enrollment = course.enrollment_complete
 
         return Response({'enrollment_complete': enrollment})
+
+
+class CourseReportDownloadView(APIView):
+    permission_classes = (IsTeacher, IsUserTeacherOfCourse)
+    authentication_classes = (JSONWebTokenAuthentication,)
+
+    def get(self, request):
+        course_id = request.GET['course_id']
+
+        df = generate(course_id)
+
+        path = default_storage.base_location + \
+               '/course{0}.csv'.format(course_id)
+
+        df.to_csv(path, index=False)
+
+        url = default_storage.base_url + 'course{0}.csv'.format(course_id)
+
+        return Response({'url': url})
