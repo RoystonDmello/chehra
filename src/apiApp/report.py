@@ -33,12 +33,22 @@ def generate(course_id):
     df['Name'] = names
     df['UID'] = uids
 
-    for lecture in lectures.all():
+    lecture_set = lectures.all()
+
+
+    for lecture in lecture_set:
         lect_students = [uid[0] for uid in lecture.students.values_list("uid")]
 
-        df[lecture.lect_no] = 'AB'
-        df[lecture.lect_no][df['UID'].isin(lect_students)] = 'P'
+        df[lecture.lect_no] = 0
+        df[lecture.lect_no][df['UID'].isin(lect_students)] = 1
 
     df['Percentage'] = df.iloc[:, 2:-1].sum(axis=1).divide(len(lect_nos))
+
+    for lecture in lecture_set:
+        df[lecture.lect_no].loc[df[lecture.lect_no] == 1] = 'P'
+        df[lecture.lect_no].loc[df[lecture.lect_no] == 0] = 'AB'
+
+    print(df)
+
 
     return df

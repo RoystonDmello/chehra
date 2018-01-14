@@ -37,7 +37,7 @@ def video_process(path, id):
         student = Student.objects.get(student_id=id)
         user = student.user
 
-        student_device = GCMDevice.objects.get(user=user)
+        student_device = GCMDevice.objects.filter(user=user)
         student_device.send_message("No face found in video, upload another one!")
 
     default_storage.delete(path)
@@ -56,6 +56,8 @@ def pics_process(imgs, lecture, teacher_user):
     absent_students = Student.objects.filter(
         student_id__in=absent_student_ids).all()
 
+    lecture.students = present_students
+
     present_users = [st.user for st in present_students]
     absent_users = [st.user for st in absent_students]
 
@@ -71,7 +73,7 @@ def pics_process(imgs, lecture, teacher_user):
                                 " for the lecture of {1} on {2}".format(
         'absent', course.name, lecture.start_time))
 
-    teacher_device = GCMDevice.objects.get(user=teacher_user)
+    teacher_device = GCMDevice.objects.filter(user=teacher_user)
     teacher_device.send_message("Attendance has been marked!",
                                 extra={
                                     "click_action": "",
@@ -79,6 +81,7 @@ def pics_process(imgs, lecture, teacher_user):
                                     "lect_id": lecture.lect_id,
                                     "lect_no": lecture.lect_no
                                 })
+
 
 
 @shared_task

@@ -6,10 +6,11 @@ from urllib.parse import urljoin
 from PIL import Image
 import numpy as np
 import io
+import time
 
 RESET = 'clear'
 CLICK = 'submit'
-IMAGE = '1.jpg'
+IMAGE = 'pics/1.jpg'
 
 
 def retrieve_image(url):
@@ -40,11 +41,12 @@ def class_click(url_list):
         click_url = urljoin(base_url, CLICK)
         retrieve_url = urljoin(base_url, IMAGE)
 
-        requests.get(reset_url)
         requests.get(click_url)
-
+        # time.sleep(2)
         img = retrieve_image(retrieve_url)
-
+        # time.sleep(2)
+        requests.get(reset_url)
+        requests.get(base_url)
         imgs.append(img)
 
     return imgs

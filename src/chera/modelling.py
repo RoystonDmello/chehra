@@ -22,7 +22,7 @@ def train(student_ids, student_datas):
     the student
     """
 
-    arrays = [np.load(file_field.open("rb"))
+    arrays = [np.load(file_field)
               for file_field in student_datas]
 
     data_set = np.vstack(arrays)
@@ -50,7 +50,7 @@ def predict(model, mappings, imgs):
     for img in imgs:
         data = encode(img)
         preds = model.predict(data)
-        final_preds = final_preds + preds
+        final_preds = final_preds + preds.tolist()
 
     final_preds = set(final_preds)
 

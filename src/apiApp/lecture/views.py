@@ -1,3 +1,4 @@
+import cv2
 from node_image import image_retrieval as ir
 from rest_framework.generics import (
     ListAPIView,
@@ -17,6 +18,9 @@ from ..permissions import IsTeacher, IsCourseEnrollmentComplete, \
     IsUserTeacherOfCourse
 
 from ..tasks import pics_process
+
+from matplotlib import pyplot as plt
+import numpy as np
 
 class LectureCreateAPIView(CreateAPIView):
     permission_classes = [IsAuthenticated, IsTeacher,
@@ -65,12 +69,16 @@ class LectureTakeAttendanceView(APIView):
         lecture_id = request.GET['lect_id']
         lecture = Lecture.objects.get(lect_id=lecture_id)
 
+        lecture.isAttendanceTaken = True
+        lecture.save()
+
         classroom = lecture.classroom
         cameras = classroom.camera_set.all()
 
         base_urls = [camera.camera_url for camera in cameras]
 
         imgs = ir.class_click(base_urls)
+        # cv2.imwrite("test.jpg", imgs)
 
         pics_process.delay(imgs, lecture, request.user)
 
