@@ -103,6 +103,3 @@ def course_process(course_id):
         course_data.save()
     except Exception as e:
         print(e)
-
-    course.enrollment_complete = True
-    course.save()

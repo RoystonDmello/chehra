@@ -95,6 +95,9 @@ class CourseDataCreateView(APIView):
 
     def post(self, request):
         course_id = request.POST['course_id']
+        course = Course.objects.get(course_id=course_id)
+        course.enrollment_complete = True
+        course.save()
 
         course_process.delay(course_id)
 
