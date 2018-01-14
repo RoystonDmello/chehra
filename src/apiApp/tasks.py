@@ -16,7 +16,6 @@ import pickle as pkl
 
 from chera import preprocessing, modelling
 
-import os
 
 @shared_task
 def video_process(path, id):
@@ -31,7 +30,11 @@ def video_process(path, id):
         student = Student.objects.get(student_id=id)
         f = File(outfile, '{0}.npy'.format(student))
 
-        instance = StudentData(student_id=student, data=f)
+        if StudentData.objects.filter(student_id=student).count() == 0:
+            instance = StudentData(student_id=student, data=f)
+        else:
+            instance = StudentData.objects.filter(student_id=student).first()
+            instance.data = f
         instance.save()
     else:
         student = Student.objects.get(student_id=id)
@@ -87,9 +90,7 @@ def pics_process(imgs, lecture, teacher_user):
 @shared_task
 def course_process(course_id):
     course = Course.objects.get(course_id=course_id)
-
     students = course.students.all()
-
     # to add exception handling for no training data of students
     try:
         datas = [student.studentdata.data for student in students]
@@ -99,10 +100,16 @@ def course_process(course_id):
 
         outfile = TemporaryFile()
         pkl.dump(saveable, outfile)
-
         f = File(outfile, name='{0}.pkl'.format(course.course_id))
 
-        course_data = CourseData(course_id=course, data=f)
+        if CourseData.objects.filter(course_id=course_id).count() == 0:
+            course_data = CourseData(course_id=course, data=f)
+
+        else:
+            course_data = CourseData.objects.get(course_id=course)
+            course_data.data = f
+
         course_data.save()
+
     except Exception as e:
         print(e)
