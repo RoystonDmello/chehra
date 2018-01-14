@@ -95,6 +95,5 @@ class GetAvailableCoursesByStudentIdListAPIView(ListAPIView):
         all_courses = Course.objects.filter(dept_id=dept_id, year=year, academic_yr=academic_yr)
         enrolled_courses = Course.objects.filter(students=student_id)
 
-        return all_courses.difference(enrolled_courses)
-
+        return all_courses.difference(enrolled_courses).filter(enrollment_complete=True)
 
